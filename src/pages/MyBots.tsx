@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Trash2, BarChart3, Search, Plus } from 'lucide-react';
+import { Edit, Trash2, BarChart3, Search, Plus, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { mockBots } from '@/mocks/mockData';
 import MainLayout from '@/layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 const container = {
   hidden: { opacity: 0 },
@@ -76,40 +77,53 @@ export default function MyBots() {
           className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
           {filteredBots.map((bot) => (
-            <motion.div key={bot.id} variants={item}>
-              <Card className="card-elegant hover-scale group">
-                <CardHeader className="space-y-4">
+            <motion.div key={bot.id} variants={item} whileHover={{ y: -8 }}>
+              <Card className="card-glow group relative overflow-hidden">
+                <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardHeader className="space-y-4 relative z-10">
                   <div className="flex items-start justify-between">
-                    <img
-                      src={bot.photo}
-                      alt={bot.name}
-                      className="h-16 w-16 rounded-xl bg-primary/10 p-2"
-                    />
+                    <div className="relative">
+                      <img
+                        src={bot.photo}
+                        alt={bot.name}
+                        className="h-16 w-16 rounded-xl bg-primary/10 p-2"
+                      />
+                      {bot.status === 'active' && (
+                        <div className="absolute -top-1 -right-1 h-4 w-4 bg-success rounded-full animate-pulse-glow" />
+                      )}
+                    </div>
                     <Badge
                       variant={bot.status === 'active' ? 'default' : 'secondary'}
-                      className={bot.status === 'active' ? 'bg-success' : 'bg-muted'}
+                      className={bot.status === 'active' ? 'bg-success shadow-glow' : 'bg-muted'}
                     >
-                      {bot.status === 'active' ? 'Ativo' : 'Inativo'}
+                      {bot.status === 'active' ? '● Ativo' : 'Inativo'}
                     </Badge>
                   </div>
                   <div>
-                    <CardTitle className="text-xl">{bot.name}</CardTitle>
+                    <CardTitle className="text-xl flex items-center gap-2">
+                      {bot.name}
+                      {bot.status === 'active' && <Zap className="h-4 w-4 text-primary" />}
+                    </CardTitle>
                     <CardDescription className="mt-2">{bot.description}</CardDescription>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Mensagens</p>
-                      <p className="text-lg font-semibold">{bot.messagesCount.toLocaleString()}</p>
+                <CardContent className="space-y-4 relative z-10">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="glass p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1">Mensagens</p>
+                      <p className="text-lg font-bold">
+                        <AnimatedCounter value={bot.messagesCount} />
+                      </p>
                     </div>
-                    <div>
-                      <p className="text-muted-foreground">Usuários</p>
-                      <p className="text-lg font-semibold">{bot.usersCount.toLocaleString()}</p>
+                    <div className="glass p-3 rounded-lg">
+                      <p className="text-xs text-muted-foreground mb-1">Usuários</p>
+                      <p className="text-lg font-bold">
+                        <AnimatedCounter value={bot.usersCount} />
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex gap-2">
                     <Button variant="outline" size="sm" className="flex-1 hover-glow">
                       <Edit className="mr-2 h-3 w-3" />
                       Editar
@@ -126,7 +140,7 @@ export default function MyBots() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="hover:bg-destructive/10 hover:text-destructive"
+                      className="hover:bg-destructive/10 hover:text-destructive transition-smooth"
                       onClick={() => handleDelete(bot.id, bot.name)}
                     >
                       <Trash2 className="h-3 w-3" />

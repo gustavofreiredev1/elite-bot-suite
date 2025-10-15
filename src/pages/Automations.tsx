@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Play, Trash2, Edit } from 'lucide-react';
+import { Plus, Play, Trash2, Edit, Zap, GitBranch } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import MainLayout from '@/layouts/MainLayout';
+import GlassCard from '@/components/GlassCard';
 
 interface Automation {
   id: string;
@@ -75,48 +76,61 @@ export default function Automations() {
           </Button>
         </div>
 
-        <Card className="card-elegant">
-          <CardHeader>
-            <CardTitle>Builder Visual</CardTitle>
-            <CardDescription>Arraste e conecte os blocos para criar fluxos</CardDescription>
+        <Card className="card-elegant relative overflow-hidden">
+          <div className="absolute inset-0 gradient-mesh opacity-30" />
+          <CardHeader className="relative z-10">
+            <CardTitle className="flex items-center gap-2">
+              <GitBranch className="h-5 w-5 text-primary" />
+              Builder Visual
+            </CardTitle>
+            <CardDescription>Arraste e conecte os blocos para criar fluxos automáticos</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[300px] p-6 border-2 border-dashed border-border rounded-xl">
+          <CardContent className="relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[300px] p-6 border-2 border-dashed border-primary/30 rounded-xl bg-background/50">
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="glass p-4 rounded-lg cursor-move space-y-2"
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                whileTap={{ scale: 0.95 }}
+                className="glass-strong p-6 rounded-xl cursor-move space-y-3 hover-glow group"
               >
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-sm font-bold">
+                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-sm font-bold shadow-glow">
                   1
                 </div>
-                <h4 className="font-semibold">Gatilho</h4>
+                <h4 className="font-semibold text-lg">Gatilho</h4>
                 <p className="text-sm text-muted-foreground">Quando receber /start</p>
+                <Badge className="bg-primary/20 text-primary">Evento</Badge>
               </motion.div>
 
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="glass p-4 rounded-lg cursor-move space-y-2"
+                whileHover={{ scale: 1.05, rotate: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="glass-strong p-6 rounded-xl cursor-move space-y-3 hover-glow group"
               >
-                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-sm font-bold">
+                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-sm font-bold shadow-glow">
                   2
                 </div>
-                <h4 className="font-semibold">Ação</h4>
-                <p className="text-sm text-muted-foreground">Enviar mensagem</p>
+                <h4 className="font-semibold text-lg">Ação</h4>
+                <p className="text-sm text-muted-foreground">Enviar mensagem personalizada</p>
+                <Badge className="bg-secondary/20 text-secondary">Resposta</Badge>
               </motion.div>
 
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="glass p-4 rounded-lg cursor-move space-y-2"
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                whileTap={{ scale: 0.95 }}
+                className="glass-strong p-6 rounded-xl cursor-move space-y-3 hover-glow group"
               >
-                <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-sm font-bold">
+                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-sm font-bold shadow-glow">
                   3
                 </div>
-                <h4 className="font-semibold">Condição</h4>
-                <p className="text-sm text-muted-foreground">Se usuário novo</p>
+                <h4 className="font-semibold text-lg">Condição</h4>
+                <p className="text-sm text-muted-foreground">Se usuário é novo</p>
+                <Badge className="bg-accent/20 text-accent">Lógica</Badge>
               </motion.div>
             </div>
-            <div className="mt-4 text-center text-sm text-muted-foreground">
-              Arraste os blocos acima para criar seu fluxo de automação
+            <div className="mt-6 flex items-center justify-center gap-2">
+              <Zap className="h-4 w-4 text-primary animate-pulse-glow" />
+              <p className="text-sm text-muted-foreground">
+                Arraste os blocos acima para criar seu fluxo de automação
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -130,18 +144,26 @@ export default function Automations() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.01, x: 4 }}
               >
-                <Card className="card-elegant hover-scale">
-                  <CardHeader>
+                <Card className="card-glow group relative overflow-hidden">
+                  <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <CardHeader className="relative z-10">
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
                         <CardTitle className="flex items-center gap-2">
                           {auto.name}
-                          <Badge variant={auto.status === 'active' ? 'default' : 'secondary'}>
-                            {auto.status === 'active' ? 'Ativo' : 'Inativo'}
+                          <Badge
+                            variant={auto.status === 'active' ? 'default' : 'secondary'}
+                            className={auto.status === 'active' ? 'bg-success shadow-glow' : 'bg-muted'}
+                          >
+                            {auto.status === 'active' ? '● Ativo' : 'Inativo'}
                           </Badge>
                         </CardTitle>
-                        <CardDescription>{auto.executions} execuções</CardDescription>
+                        <CardDescription className="flex items-center gap-2">
+                          <Zap className="h-3 w-3 text-primary" />
+                          {auto.executions.toLocaleString()} execuções
+                        </CardDescription>
                       </div>
                       <div className="flex gap-2">
                         <Button
@@ -159,23 +181,23 @@ export default function Automations() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleDelete(auto.id, auto.name)}
-                          className="hover:bg-destructive/10 hover:text-destructive"
+                          className="hover:bg-destructive/10 hover:text-destructive transition-smooth"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="relative z-10">
                     <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-primary" />
+                      <div className="flex items-center gap-2 flex-1">
+                        <div className="w-2 h-2 rounded-full bg-primary shadow-glow" />
                         <span className="text-muted-foreground">Gatilho:</span>
                         <span className="font-medium">{auto.trigger}</span>
                       </div>
                       <div className="text-muted-foreground">→</div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-secondary" />
+                      <div className="flex items-center gap-2 flex-1">
+                        <div className="w-2 h-2 rounded-full bg-secondary shadow-glow" />
                         <span className="text-muted-foreground">Ação:</span>
                         <span className="font-medium">{auto.action}</span>
                       </div>

@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion';
-import { Bot, MessageSquare, Repeat, Activity } from 'lucide-react';
+import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { mockStats, mockChartData, mockCommandData } from '@/mocks/mockData';
 import MainLayout from '@/layouts/MainLayout';
+import AnimatedCounter from '@/components/AnimatedCounter';
+import ProgressBar from '@/components/ProgressBar';
+import GlassCard from '@/components/GlassCard';
 
 const COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
 
@@ -57,16 +60,50 @@ export default function Dashboard() {
         {/* Stats Cards */}
         <motion.div variants={item} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {statCards.map((stat, index) => (
-            <Card key={index} className="card-elegant hover-scale">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{stat.value}</div>
-              </CardContent>
-            </Card>
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.02, y: -4 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <Card className="card-glow relative overflow-hidden group">
+                <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">{stat.label}</CardTitle>
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                  </div>
+                </CardHeader>
+                <CardContent className="relative z-10">
+                  <div className="text-3xl font-bold">
+                    {typeof stat.value === 'number' ? (
+                      <AnimatedCounter value={stat.value} />
+                    ) : (
+                      stat.value
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 mt-2 text-xs text-success">
+                    <TrendingUp className="h-3 w-3" />
+                    <span>+12% vs mês anterior</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
+        </motion.div>
+
+        {/* Progress Indicator */}
+        <motion.div variants={item}>
+          <GlassCard glow>
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Zap className="h-6 w-6 text-primary animate-pulse-glow" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold mb-1">Sistema 100% Operacional</h3>
+                <ProgressBar value={100} glow className="mt-2" />
+              </div>
+            </div>
+          </GlassCard>
         </motion.div>
 
         {/* Charts */}
@@ -121,11 +158,14 @@ export default function Dashboard() {
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
-                      data={mockCommandData}
+                      data={mockCommandData as any}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={(entry: any) => {
+                        const percent = entry.percent || 0;
+                        return `${entry.name} ${(Number(percent) * 100).toFixed(0)}%`;
+                      }}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="count"
