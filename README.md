@@ -1,73 +1,136 @@
-# Welcome to your Lovable project
+# 🤖 BOT ELITE
 
-## Project info
+**Plataforma completa para gerenciamento avançado de bots do Telegram**
 
-**URL**: https://lovable.dev/projects/3cbbcd82-1f24-42c7-9573-9054f44ebc83
+Uma aplicação web moderna e intuitiva inspirada no design do Grok, construída com React + Vite + Tailwind CSS, para criar, gerenciar e otimizar seus bots do Telegram com facilidade.
 
-## How can I edit this code?
+## ✨ Funcionalidades
 
-There are several ways of editing your application.
+- **Dashboard Intuitivo**: Métricas em tempo real, gráficos interativos e visão geral completa
+- **Criação de Bots**: Wizard multi-step guiado para configurar novos bots
+- **Gerenciamento**: Lista completa com edição, exclusão e visualização de estatísticas
+- **Automações**: Builder visual para criar fluxos automáticos de resposta
+- **Simulador de Chat**: Teste suas mensagens e automações em tempo real
+- **Estatísticas Avançadas**: Análise detalhada com gráficos de barra, linha e pizza
+- **Templates de Mensagens**: Crie e gerencie mensagens predefinidas
+- **Configurações**: Personalize seu perfil, notificações e preferências
 
-**Use Lovable**
+## 🎨 Design System
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3cbbcd82-1f24-42c7-9573-9054f44ebc83) and start prompting.
+- **Tema**: Dark mode premium inspirado no Grok
+- **Cores**: Fundo escuro (#0a0a0a), cards sutis (#1a1a1a), accent azul neon (#3b82f6)
+- **Tipografia**: Inter (Google Fonts)
+- **Animações**: Transições suaves com Framer Motion
+- **Responsivo**: Mobile-first, otimizado para todos os dispositivos
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Tecnologias
 
-**Use your preferred IDE**
+- **React 18** com Hooks modernos
+- **Vite** para desenvolvimento ultrarrápido
+- **TypeScript** para type safety
+- **Tailwind CSS** para estilização utilitária
+- **shadcn/ui** para componentes UI elegantes
+- **Framer Motion** para animações fluidas
+- **React Router** para navegação SPA
+- **Zustand** para gerenciamento de estado
+- **React Hook Form + Zod** para validação de formulários
+- **Recharts** para gráficos interativos
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 📦 Instalação
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone o repositório
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Entre no diretório
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Instale as dependências
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Inicie o servidor de desenvolvimento
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+O aplicativo estará disponível em `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🏗️ Estrutura do Projeto
 
-**Use GitHub Codespaces**
+```
+src/
+├── components/          # Componentes reutilizáveis
+│   ├── ui/             # Componentes shadcn/ui
+│   ├── Logo.tsx
+│   ├── Navbar.tsx
+│   ├── Sidebar.tsx
+│   └── ProtectedRoute.tsx
+├── layouts/            # Layouts principais
+│   ├── AuthLayout.tsx
+│   └── MainLayout.tsx
+├── pages/              # Páginas da aplicação
+│   ├── Login.tsx
+│   ├── Dashboard.tsx
+│   ├── CreateBot.tsx
+│   ├── MyBots.tsx
+│   ├── Stats.tsx
+│   ├── Automations.tsx
+│   ├── Messages.tsx
+│   ├── Settings.tsx
+│   └── Support.tsx
+├── store/              # Estado global (Zustand)
+│   └── authStore.ts
+├── mocks/              # Dados mockados
+│   └── mockData.ts
+└── App.tsx             # Componente raiz com rotas
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔐 Autenticação
 
-## What technologies are used for this project?
+O sistema utiliza autenticação simulada com persistência local (localStorage via Zustand). Ideal para protótipos e testes.
 
-This project is built with:
+**Login padrão:**
+- Email: qualquer email válido
+- Senha: mínimo 6 caracteres
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📊 Dados Mockados
 
-## How can I deploy this project?
+Todos os dados são simulados localmente para demonstração:
+- 3 bots de exemplo
+- Métricas e estatísticas fictícias
+- Gráficos com dados dos últimos 7 dias
+- Automações e templates predefinidos
 
-Simply open [Lovable](https://lovable.dev/projects/3cbbcd82-1f24-42c7-9573-9054f44ebc83) and click on Share -> Publish.
+## 🎯 Próximos Passos
 
-## Can I connect a custom domain to my Lovable project?
+- [ ] Integração com API real do Telegram
+- [ ] Backend para persistência de dados
+- [ ] Webhook para recebimento de mensagens
+- [ ] Sistema de notificações em tempo real
+- [ ] Export de relatórios em PDF
+- [ ] Multi-idioma (i18n)
+- [ ] Temas customizáveis
 
-Yes, you can!
+## 📝 Scripts Disponíveis
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+npm run dev          # Desenvolvimento
+npm run build        # Build de produção
+npm run preview      # Preview do build
+npm run lint         # Verificar código
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🌐 Deploy
+
+Para fazer deploy do projeto, use o botão **Publish** no Lovable ou siga os passos para deploy em Vercel/Netlify.
+
+## 📄 Licença
+
+Este projeto é um protótipo desenvolvido com Lovable.dev
+
+## 🤝 Contribuindo
+
+Pull requests são bem-vindos! Para mudanças maiores, abra uma issue primeiro para discutir o que você gostaria de mudar.
+
+---
+
+**Desenvolvido com ❤️ usando [Lovable.dev](https://lovable.dev)**
