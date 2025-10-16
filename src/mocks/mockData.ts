@@ -8,6 +8,10 @@ export interface Bot {
   createdAt: string;
   messagesCount: number;
   usersCount: number;
+  stats: {
+    messages: number;
+    users: number;
+  };
 }
 
 export interface Stats {
@@ -39,6 +43,10 @@ export const mockBots: Bot[] = [
     createdAt: '2025-01-15',
     messagesCount: 1250,
     usersCount: 340,
+    stats: {
+      messages: 1250,
+      users: 340,
+    },
   },
   {
     id: '2',
@@ -50,6 +58,10 @@ export const mockBots: Bot[] = [
     createdAt: '2025-02-01',
     messagesCount: 890,
     usersCount: 210,
+    stats: {
+      messages: 890,
+      users: 210,
+    },
   },
   {
     id: '3',
@@ -61,6 +73,10 @@ export const mockBots: Bot[] = [
     createdAt: '2025-01-20',
     messagesCount: 450,
     usersCount: 120,
+    stats: {
+      messages: 450,
+      users: 120,
+    },
   },
 ];
 

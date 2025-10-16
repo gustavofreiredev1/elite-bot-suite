@@ -13,6 +13,7 @@ const menuItems = [
   { icon: Home, label: 'Dashboard', path: '/dashboard' },
   { icon: Bot, label: 'Meus Bots', path: '/my-bots' },
   { icon: BarChart3, label: 'Estatísticas', path: '/stats' },
+  { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: Repeat, label: 'Automações', path: '/automations' },
   { icon: MessageSquare, label: 'Mensagens', path: '/messages' },
   { icon: Settings, label: 'Configurações', path: '/settings' },

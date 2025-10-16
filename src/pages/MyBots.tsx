@@ -128,15 +128,15 @@ export default function MyBots() {
                       <Edit className="mr-2 h-3 w-3" />
                       Editar
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1 hover-glow"
-                      onClick={() => navigate('/stats')}
-                    >
-                      <BarChart3 className="mr-2 h-3 w-3" />
-                      Stats
-                    </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 hover-glow"
+                    onClick={() => navigate(`/bot/${bot.id}`)}
+                  >
+                    <BarChart3 className="mr-2 h-3 w-3" />
+                    Detalhes
+                  </Button>
                     <Button
                       variant="outline"
                       size="sm"

@@ -7,7 +7,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateBot from "./pages/CreateBot";
 import MyBots from "./pages/MyBots";
+import BotDetail from "./pages/BotDetail";
 import Stats from "./pages/Stats";
+import Analytics from "./pages/Analytics";
 import Automations from "./pages/Automations";
 import Messages from "./pages/Messages";
 import Settings from "./pages/Settings";
@@ -51,10 +53,26 @@ const App = () => (
             }
           />
           <Route
+            path="/bot/:id"
+            element={
+              <ProtectedRoute>
+                <BotDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/stats"
             element={
               <ProtectedRoute>
                 <Stats />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <Analytics />
               </ProtectedRoute>
             }
           />

@@ -58,13 +58,18 @@
     --ring: 217 91% 60%;
 
     /* Sidebar */
-    --sidebar-background: 220 13% 6%;
+    --sidebar: 220 13% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-border: 215 14% 12%;
     --sidebar-accent: 215 14% 14%;
 
     /* Radius */
     --radius: 1rem;
+    
+    /* Status colors */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --info: 199 89% 48%;
 
     /* Gradients - Grok Style */
     --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(262 83% 58%) 100%);
