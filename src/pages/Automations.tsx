@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Play, Trash2, Edit, Zap, GitBranch } from 'lucide-react';
+import { Plus, Play, Trash2, Edit, Zap, GitBranch, Repeat } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -65,16 +66,18 @@ export default function Automations() {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Automações</h1>
-            <p className="text-muted-foreground">Configure fluxos automáticos para seus bots</p>
-          </div>
-          <Button className="hover-glow">
-            <Plus className="mr-2 h-4 w-4" />
-            Nova Automação
-          </Button>
-        </div>
+        <PageHeader
+          title="Automações"
+          description="Configure fluxos automáticos para seus bots"
+          icon={Repeat}
+          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Automações' }]}
+          actions={
+            <Button className="hover-glow">
+              <Plus className="mr-2 h-4 w-4" />
+              Nova Automação
+            </Button>
+          }
+        />
 
         <Card className="card-elegant relative overflow-hidden">
           <div className="absolute inset-0 gradient-mesh opacity-30" />

@@ -36,14 +36,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
-      <motion.aside
-        initial={false}
-        animate={{ x: isOpen ? 0 : '-100%' }}
-        transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+      {/* Sidebar - Always visible on desktop */}
+      <aside
         className={cn(
           'fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r border-border bg-sidebar',
-          'lg:translate-x-0 lg:static',
+          'transition-transform duration-300 ease-in-out lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
           'custom-scrollbar overflow-y-auto'
         )}
       >
@@ -91,7 +89,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             </NavLink>
           </div>
         </div>
-      </motion.aside>
+      </aside>
     </>
   );
 }

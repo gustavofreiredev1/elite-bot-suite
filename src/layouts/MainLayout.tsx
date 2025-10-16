@@ -23,8 +23,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <Navbar onMenuClick={() => setSidebarOpen(true)} />
       <div className="flex pt-16">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 p-6 lg:ml-64">
-          <div className="mx-auto max-w-7xl">
+        <main className="flex-1 p-4 lg:p-6 lg:ml-64 w-full">
+          <div className="mx-auto max-w-7xl w-full">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

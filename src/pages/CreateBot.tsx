@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ArrowLeft, ArrowRight, Check, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Upload, Bot } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
+import ProgressBar from '@/components/ProgressBar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -69,15 +71,18 @@ export default function CreateBot() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto space-y-6"
       >
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/my-bots')} className="hover-glow">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Criar Novo Bot</h1>
-            <p className="text-muted-foreground">Wizard de criação em {steps.length} passos</p>
-          </div>
-        </div>
+        <PageHeader
+          title="Criar Novo Bot"
+          description="Configure seu bot em poucos passos"
+          icon={Bot}
+          breadcrumbs={[
+            { label: 'Dashboard', href: '/dashboard' },
+            { label: 'Meus Bots', href: '/my-bots' },
+            { label: 'Criar Bot' }
+          ]}
+        />
+
+        <ProgressBar value={(step / 4) * 100} className="mb-4" glow />
 
         {/* Progress Steps */}
         <div className="flex justify-between">

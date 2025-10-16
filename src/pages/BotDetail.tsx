@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, Power, Copy, ExternalLink, Activity, Users, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Power, Copy, ExternalLink, Activity, Users, MessageSquare, Bot } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -44,28 +45,19 @@ export default function BotDetail() {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <Breadcrumbs
-          items={[
+        <PageHeader
+          title={bot.name}
+          description={`@${bot.username || bot.name.toLowerCase().replace(/\s/g, '_')}_bot • Criado em 15 de Janeiro, 2025`}
+          icon={Bot}
+          breadcrumbs={[
+            { label: 'Dashboard', href: '/dashboard' },
             { label: 'Meus Bots', href: '/my-bots' },
-            { label: bot.name },
+            { label: bot.name }
           ]}
-        />
-
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate('/my-bots')} className="hover-glow">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold">{bot.name}</h1>
-                <StatusBadge status={isActive ? 'active' : 'inactive'} />
-              </div>
-              <p className="text-muted-foreground">Criado em 15 de Janeiro, 2025</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
+          actions={
+            <>
+              <StatusBadge status={isActive ? 'active' : 'inactive'} />
+              <div className="flex items-center gap-2">
             <Button variant="outline" onClick={handleToggleStatus} className="hover-glow">
               <Power className="mr-2 h-4 w-4" />
               {isActive ? 'Desativar' : 'Ativar'}
@@ -74,12 +66,14 @@ export default function BotDetail() {
               <Edit className="mr-2 h-4 w-4" />
               Editar
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
-              <Trash2 className="mr-2 h-4 w-4" />
-              Deletar
-            </Button>
-          </div>
-        </div>
+                <Button variant="destructive" onClick={handleDelete}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Deletar
+                </Button>
+              </div>
+            </>
+          }
+        />
 
         <div className="grid gap-4 md:grid-cols-3">
           <StatCard

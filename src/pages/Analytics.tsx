@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, MessageSquare, Zap, Download, Calendar } from 'lucide-react';
+import { TrendingUp, Users, MessageSquare, Zap, Download, Calendar, LineChart as LineChartIcon } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -53,12 +54,32 @@ export default function Analytics() {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Analytics Avançado</h1>
-            <p className="text-muted-foreground">Análise detalhada de desempenho</p>
-          </div>
-          <div className="flex items-center gap-2">
+        <PageHeader
+          title="Analytics Avançado"
+          description="Métricas e insights detalhados"
+          icon={LineChartIcon}
+          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Analytics' }]}
+        />
+        <div className="flex justify-end items-center gap-2 mb-6">
+          <Select value={period} onValueChange={setPeriod}>
+            <SelectTrigger className="w-[180px] bg-card border-border">
+              <Calendar className="mr-2 h-4 w-4" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-card border-border">
+              <SelectItem value="today">Hoje</SelectItem>
+              <SelectItem value="7d">Últimos 7 dias</SelectItem>
+              <SelectItem value="30d">Últimos 30 dias</SelectItem>
+              <SelectItem value="90d">Últimos 90 dias</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button onClick={handleExport} className="hover-glow">
+            <Download className="mr-2 h-4 w-4" />
+            Exportar
+          </Button>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-4">
             <Select value={period} onValueChange={setPeriod}>
               <SelectTrigger className="w-[180px] bg-card border-border">
                 <Calendar className="mr-2 h-4 w-4" />
@@ -76,7 +97,7 @@ export default function Analytics() {
               Exportar
             </Button>
           </div>
-        </div>
+        />
 
         <div className="grid gap-4 md:grid-cols-4">
           <StatCard

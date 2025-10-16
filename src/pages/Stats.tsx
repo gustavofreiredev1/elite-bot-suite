@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, MessageSquare, Clock, Sparkles } from 'lucide-react';
+import { TrendingUp, Users, MessageSquare, Clock, Sparkles, BarChart3 } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -24,13 +25,14 @@ export default function Stats() {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Estatísticas</h1>
-            <p className="text-muted-foreground">Análise detalhada dos seus bots</p>
-          </div>
-          <div className="flex gap-2">
-            <Select defaultValue="all">
+        <PageHeader
+          title="Estatísticas"
+          description="Análise detalhada de performance"
+          icon={BarChart3}
+          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Estatísticas' }]}
+        />
+        <div className="flex justify-end gap-2">
+          <Select defaultValue="all">
               <SelectTrigger className="w-[180px] bg-card border-border">
                 <SelectValue placeholder="Selecione o bot" />
               </SelectTrigger>
@@ -51,7 +53,6 @@ export default function Stats() {
               </SelectContent>
             </Select>
           </div>
-        </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat, index) => (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Edit, Plus, Bot, User as UserIcon, Sparkles } from 'lucide-react';
+import { Send, Edit, Plus, Bot, User as UserIcon, Sparkles, MessageSquare } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -76,10 +77,12 @@ export default function Messages() {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <div>
-          <h1 className="text-3xl font-bold">Mensagens</h1>
-          <p className="text-muted-foreground">Gerencie templates e teste seu bot</p>
-        </div>
+        <PageHeader
+          title="Mensagens"
+          description="Simulador de chat com seus bots"
+          icon={MessageSquare}
+          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Mensagens' }]}
+        />
 
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="card-elegant lg:col-span-2 relative overflow-hidden">

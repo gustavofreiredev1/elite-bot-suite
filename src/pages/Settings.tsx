@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Bell, Shield, Globe, Upload } from 'lucide-react';
+import { User, Bell, Shield, Globe, Upload, Settings as SettingsIcon } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,10 +30,12 @@ export default function Settings() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto space-y-6"
       >
-        <div>
-          <h1 className="text-3xl font-bold">Configurações</h1>
-          <p className="text-muted-foreground">Gerencie suas preferências e conta</p>
-        </div>
+        <PageHeader
+          title="Configurações"
+          description="Gerencie suas preferências e conta"
+          icon={SettingsIcon}
+          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Configurações' }]}
+        />
 
         <Card className="card-elegant">
           <CardHeader>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Trash2, BarChart3, Search, Plus, Zap } from 'lucide-react';
+import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,16 +50,18 @@ export default function MyBots() {
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Meus Bots</h1>
-            <p className="text-muted-foreground">Gerencie todos os seus bots</p>
-          </div>
-          <Button onClick={() => navigate('/create-bot')} className="hover-glow">
-            <Plus className="mr-2 h-4 w-4" />
-            Criar Novo Bot
-          </Button>
-        </div>
+        <PageHeader
+          title="Meus Bots"
+          description="Gerencie todos os seus bots Telegram"
+          icon={BotIcon}
+          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Meus Bots' }]}
+          actions={
+            <Button onClick={() => navigate('/create-bot')} className="hover-glow">
+              <Plus className="mr-2 h-4 w-4" />
+              Criar Novo Bot
+            </Button>
+          }
+        />
 
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />

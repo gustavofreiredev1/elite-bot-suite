@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { BookOpen, MessageCircle, Mail, ExternalLink } from 'lucide-react';
+import { BookOpen, MessageCircle, Mail, ExternalLink, HelpCircle } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,10 +46,12 @@ export default function Support() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-4xl mx-auto space-y-6"
       >
-        <div>
-          <h1 className="text-3xl font-bold">Suporte</h1>
-          <p className="text-muted-foreground">Encontre respostas e entre em contato</p>
-        </div>
+        <PageHeader
+          title="Suporte"
+          description="Estamos aqui para ajudar você"
+          icon={HelpCircle}
+          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Suporte' }]}
+        />
 
         <div className="grid gap-6 md:grid-cols-3">
           <Card className="card-elegant hover-scale">

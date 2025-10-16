@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap } from 'lucide-react';
+import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap, Home } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -40,11 +41,13 @@ export default function Dashboard() {
         animate="show"
         className="space-y-6"
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Visão geral dos seus bots</p>
-          </div>
+        <PageHeader
+          title="Dashboard"
+          description="Visão geral da sua operação"
+          icon={Home}
+          breadcrumbs={[{ label: 'Dashboard' }]}
+        />
+        <div className="flex justify-end">
           <Select defaultValue="7d">
             <SelectTrigger className="w-[180px] bg-card border-border">
               <SelectValue placeholder="Período" />
