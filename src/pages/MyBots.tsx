@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon } from 'lucide-react';
+import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon, Clock, DollarSign } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { mockBots } from '@/mocks/mockData';
 import MainLayout from '@/layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import AutoPostTab from '@/components/AutoPostTab';
+import AutoPayTab from '@/components/AutoPayTab';
 
 const container = {
   hidden: { opacity: 0 },
@@ -62,6 +65,24 @@ export default function MyBots() {
             </Button>
           }
         />
+
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="all" className="gap-2">
+              <BotIcon className="h-4 w-4" />
+              Todos os Bots
+            </TabsTrigger>
+            <TabsTrigger value="autopost" className="gap-2">
+              <Clock className="h-4 w-4" />
+              AutoPost 24h
+            </TabsTrigger>
+            <TabsTrigger value="autopay" className="gap-2">
+              <DollarSign className="h-4 w-4" />
+              AutoPay BOT
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="all" className="space-y-6">
 
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -160,6 +181,16 @@ export default function MyBots() {
             <p className="text-muted-foreground">Nenhum bot encontrado</p>
           </div>
         )}
+          </TabsContent>
+
+          <TabsContent value="autopost">
+            <AutoPostTab />
+          </TabsContent>
+
+          <TabsContent value="autopay">
+            <AutoPayTab />
+          </TabsContent>
+        </Tabs>
       </motion.div>
     </MainLayout>
   );
