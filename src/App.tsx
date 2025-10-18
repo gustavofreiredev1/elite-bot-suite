@@ -14,6 +14,7 @@ import Automations from "./pages/Automations";
 import Messages from "./pages/Messages";
 import Settings from "./pages/Settings";
 import Support from "./pages/Support";
+import AutoPost from "./pages/AutoPost";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
@@ -105,6 +106,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Support />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/autopost"
+            element={
+              <ProtectedRoute>
+                <AutoPost />
               </ProtectedRoute>
             }
           />

@@ -1,4 +1,4 @@
-import { Home, Bot, BarChart3, Repeat, MessageSquare, Settings, HelpCircle, X } from 'lucide-react';
+import { Home, Bot, BarChart3, Repeat, MessageSquare, Settings, HelpCircle, X, Clock } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -12,6 +12,7 @@ interface SidebarProps {
 const menuItems = [
   { icon: Home, label: 'Dashboard', path: '/dashboard' },
   { icon: Bot, label: 'Meus Bots', path: '/my-bots' },
+  { icon: Clock, label: 'AutoPost 24h', path: '/autopost' },
   { icon: BarChart3, label: 'Estatísticas', path: '/stats' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: Repeat, label: 'Automações', path: '/automations' },
