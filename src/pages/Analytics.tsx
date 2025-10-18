@@ -59,44 +59,26 @@ export default function Analytics() {
           description="Métricas e insights detalhados"
           icon={LineChartIcon}
           breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Analytics' }]}
-        />
-        <div className="flex justify-end items-center gap-2 mb-6">
-          <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[180px] bg-card border-border">
-              <Calendar className="mr-2 h-4 w-4" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border">
-              <SelectItem value="today">Hoje</SelectItem>
-              <SelectItem value="7d">Últimos 7 dias</SelectItem>
-              <SelectItem value="30d">Últimos 30 dias</SelectItem>
-              <SelectItem value="90d">Últimos 90 dias</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleExport} className="hover-glow">
-            <Download className="mr-2 h-4 w-4" />
-            Exportar
-          </Button>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-4">
-            <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="w-[180px] bg-card border-border">
-                <Calendar className="mr-2 h-4 w-4" />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border">
-                <SelectItem value="today">Hoje</SelectItem>
-                <SelectItem value="7d">Últimos 7 dias</SelectItem>
-                <SelectItem value="30d">Últimos 30 dias</SelectItem>
-                <SelectItem value="90d">Últimos 90 dias</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button onClick={handleExport} className="hover-glow">
-              <Download className="mr-2 h-4 w-4" />
-              Exportar
-            </Button>
-          </div>
+          actions={
+            <>
+              <Select value={period} onValueChange={setPeriod}>
+                <SelectTrigger className="w-[180px] bg-card border-border">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border">
+                  <SelectItem value="today">Hoje</SelectItem>
+                  <SelectItem value="7d">Últimos 7 dias</SelectItem>
+                  <SelectItem value="30d">Últimos 30 dias</SelectItem>
+                  <SelectItem value="90d">Últimos 90 dias</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button onClick={handleExport} className="hover-glow">
+                <Download className="mr-2 h-4 w-4" />
+                Exportar
+              </Button>
+            </>
+          }
         />
 
         <div className="grid gap-4 md:grid-cols-4">

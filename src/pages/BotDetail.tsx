@@ -47,7 +47,7 @@ export default function BotDetail() {
       >
         <PageHeader
           title={bot.name}
-          description={`@${bot.username || bot.name.toLowerCase().replace(/\s/g, '_')}_bot • Criado em 15 de Janeiro, 2025`}
+          description={`@${bot.name.toLowerCase().replace(/\s/g, '_')}_bot • Criado em ${new Date(bot.createdAt).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}`}
           icon={Bot}
           breadcrumbs={[
             { label: 'Dashboard', href: '/dashboard' },
