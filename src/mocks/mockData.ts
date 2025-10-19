@@ -1,3 +1,5 @@
+export type ToolType = 'autopost' | 'autopay' | 'sessions' | 'addmembers' | 'tclone' | 'views' | 'superbot';
+
 export interface Bot {
   id: string;
   name: string;
@@ -8,6 +10,7 @@ export interface Bot {
   createdAt: string;
   messagesCount: number;
   usersCount: number;
+  toolType: ToolType;
   stats: {
     messages: number;
     users: number;
@@ -43,6 +46,7 @@ export const mockBots: Bot[] = [
     createdAt: '2025-01-15',
     messagesCount: 1250,
     usersCount: 340,
+    toolType: 'superbot',
     stats: {
       messages: 1250,
       users: 340,
@@ -58,6 +62,7 @@ export const mockBots: Bot[] = [
     createdAt: '2025-02-01',
     messagesCount: 890,
     usersCount: 210,
+    toolType: 'autopay',
     stats: {
       messages: 890,
       users: 210,
@@ -73,6 +78,7 @@ export const mockBots: Bot[] = [
     createdAt: '2025-01-20',
     messagesCount: 450,
     usersCount: 120,
+    toolType: 'autopost',
     stats: {
       messages: 450,
       users: 120,

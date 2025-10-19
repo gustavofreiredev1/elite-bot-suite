@@ -16,6 +16,13 @@ import Settings from "./pages/Settings";
 import Support from "./pages/Support";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import AutoPostPage from "./pages/tools/AutoPostPage";
+import AutoPayPage from "./pages/tools/AutoPayPage";
+import CreateSessionsPage from "./pages/tools/CreateSessionsPage";
+import AddMembersPage from "./pages/tools/AddMembersPage";
+import TClonePage from "./pages/tools/TClonePage";
+import ViewsTrackingPage from "./pages/tools/ViewsTrackingPage";
+import SuperBotPage from "./pages/tools/SuperBotPage";
 
 const queryClient = new QueryClient();
 
@@ -105,6 +112,62 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Support />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/autopost"
+            element={
+              <ProtectedRoute>
+                <AutoPostPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/autopay"
+            element={
+              <ProtectedRoute>
+                <AutoPayPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/sessions"
+            element={
+              <ProtectedRoute>
+                <CreateSessionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/addmembers"
+            element={
+              <ProtectedRoute>
+                <AddMembersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/tclone"
+            element={
+              <ProtectedRoute>
+                <TClonePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/views"
+            element={
+              <ProtectedRoute>
+                <ViewsTrackingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/superbot"
+            element={
+              <ProtectedRoute>
+                <SuperBotPage />
               </ProtectedRoute>
             }
           />

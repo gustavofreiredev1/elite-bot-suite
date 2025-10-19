@@ -1,24 +1,16 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon, Clock, DollarSign, Key, UserPlus, Copy, Eye } from 'lucide-react';
+import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { mockBots } from '@/mocks/mockData';
 import MainLayout from '@/layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import AnimatedCounter from '@/components/AnimatedCounter';
-import AutoPostTab from '@/components/AutoPostTab';
-import AutoPayTab from '@/components/AutoPayTab';
-import CreateSessionsTab from '@/components/CreateSessionsTab';
-import AddMembersTab from '@/components/AddMembersTab';
-import TCloneTab from '@/components/TCloneTab';
-import ViewsTrackingTab from '@/components/ViewsTrackingTab';
-import SuperBotTab from '@/components/SuperBotTab';
 
 const container = {
   hidden: { opacity: 0 },
@@ -71,43 +63,6 @@ export default function MyBots() {
           }
         />
 
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-6 h-auto">
-            <TabsTrigger value="all" className="gap-2">
-              <BotIcon className="h-4 w-4" />
-              <span className="hidden sm:inline">Todos</span>
-            </TabsTrigger>
-            <TabsTrigger value="autopost" className="gap-2">
-              <Clock className="h-4 w-4" />
-              <span className="hidden sm:inline">AutoPost</span>
-            </TabsTrigger>
-            <TabsTrigger value="autopay" className="gap-2">
-              <DollarSign className="h-4 w-4" />
-              <span className="hidden sm:inline">AutoPay</span>
-            </TabsTrigger>
-            <TabsTrigger value="sessions" className="gap-2">
-              <Key className="h-4 w-4" />
-              <span className="hidden sm:inline">Sessões</span>
-            </TabsTrigger>
-            <TabsTrigger value="addmembers" className="gap-2">
-              <UserPlus className="h-4 w-4" />
-              <span className="hidden sm:inline">Add Membros</span>
-            </TabsTrigger>
-            <TabsTrigger value="tclone" className="gap-2">
-              <Copy className="h-4 w-4" />
-              <span className="hidden sm:inline">TClone</span>
-            </TabsTrigger>
-            <TabsTrigger value="views" className="gap-2">
-              <Eye className="h-4 w-4" />
-              <span className="hidden sm:inline">Views</span>
-            </TabsTrigger>
-            <TabsTrigger value="superbot" className="gap-2">
-              <Zap className="h-4 w-4" />
-              <span className="hidden sm:inline">Super Bot</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="space-y-6">
 
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -173,7 +128,12 @@ export default function MyBots() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1 hover-glow">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1 hover-glow"
+                      onClick={() => navigate(`/bot/${bot.id}/${bot.toolType}`)}
+                    >
                       <Edit className="mr-2 h-3 w-3" />
                       Editar
                     </Button>
@@ -181,7 +141,7 @@ export default function MyBots() {
                     variant="outline"
                     size="sm"
                     className="flex-1 hover-glow"
-                    onClick={() => navigate(`/bot/${bot.id}`)}
+                    onClick={() => navigate(`/bot/${bot.id}/${bot.toolType}`)}
                   >
                     <BarChart3 className="mr-2 h-3 w-3" />
                     Detalhes
@@ -206,36 +166,6 @@ export default function MyBots() {
             <p className="text-muted-foreground">Nenhum bot encontrado</p>
           </div>
         )}
-          </TabsContent>
-
-          <TabsContent value="autopost">
-            <AutoPostTab />
-          </TabsContent>
-
-          <TabsContent value="autopay">
-            <AutoPayTab />
-          </TabsContent>
-
-          <TabsContent value="sessions">
-            <CreateSessionsTab />
-          </TabsContent>
-
-          <TabsContent value="addmembers">
-            <AddMembersTab />
-          </TabsContent>
-
-          <TabsContent value="tclone">
-            <TCloneTab />
-          </TabsContent>
-
-          <TabsContent value="views">
-            <ViewsTrackingTab />
-          </TabsContent>
-
-          <TabsContent value="superbot">
-            <SuperBotTab />
-          </TabsContent>
-        </Tabs>
       </motion.div>
     </MainLayout>
   );
