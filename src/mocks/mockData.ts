@@ -1,4 +1,4 @@
-export type ToolType = 'autopost' | 'autopay' | 'sessions' | 'addmembers' | 'tclone' | 'views' | 'superbot';
+export type ToolType = 'autopost' | 'autopay' | 'sessions' | 'addmembers' | 'tclone' | 'views' | 'superbot' | 'masssender' | 'userscraper';
 
 export interface Bot {
   id: string;

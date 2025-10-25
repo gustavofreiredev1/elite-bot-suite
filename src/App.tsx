@@ -23,6 +23,8 @@ import AddMembersPage from "./pages/tools/AddMembersPage";
 import TClonePage from "./pages/tools/TClonePage";
 import ViewsTrackingPage from "./pages/tools/ViewsTrackingPage";
 import SuperBotPage from "./pages/tools/SuperBotPage";
+import MassSenderPage from "./pages/tools/MassSenderPage";
+import UserScraperPage from "./pages/tools/UserScraperPage";
 
 const queryClient = new QueryClient();
 
@@ -168,6 +170,22 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <SuperBotPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/masssender"
+            element={
+              <ProtectedRoute>
+                <MassSenderPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bot/:id/userscraper"
+            element={
+              <ProtectedRoute>
+                <UserScraperPage />
               </ProtectedRoute>
             }
           />
