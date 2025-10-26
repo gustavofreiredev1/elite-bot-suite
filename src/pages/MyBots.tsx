@@ -11,6 +11,8 @@ import MainLayout from '@/layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import { getToolFeatures, toolColors } from '@/config/toolFeatures';
+import { Separator } from '@/components/ui/separator';
 
 const container = {
   hidden: { opacity: 0 },
@@ -80,85 +82,124 @@ export default function MyBots() {
           animate="show"
           className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
         >
-          {filteredBots.map((bot) => (
-            <motion.div key={bot.id} variants={item} whileHover={{ y: -8 }}>
-              <Card className="card-glow group relative overflow-hidden">
-                <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <CardHeader className="space-y-4 relative z-10">
-                  <div className="flex items-start justify-between">
-                    <div className="relative">
-                      <img
-                        src={bot.photo}
-                        alt={bot.name}
-                        className="h-16 w-16 rounded-xl bg-primary/10 p-2"
-                      />
-                      {bot.status === 'active' && (
-                        <div className="absolute -top-1 -right-1 h-4 w-4 bg-success rounded-full animate-pulse-glow" />
-                      )}
+          {filteredBots.map((bot) => {
+            const features = getToolFeatures(bot.toolType);
+            const gradientColor = toolColors[bot.toolType];
+            
+            return (
+              <motion.div key={bot.id} variants={item} whileHover={{ y: -8 }}>
+                <Card className="card-glow group relative overflow-hidden h-full flex flex-col">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${gradientColor} opacity-50 group-hover:opacity-70 transition-opacity duration-500`} />
+                  <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <CardHeader className="space-y-4 relative z-10">
+                    <div className="flex items-start justify-between">
+                      <div className="relative">
+                        <img
+                          src={bot.photo}
+                          alt={bot.name}
+                          className="h-16 w-16 rounded-xl bg-primary/10 p-2"
+                        />
+                        {bot.status === 'active' && (
+                          <div className="absolute -top-1 -right-1 h-4 w-4 bg-success rounded-full animate-pulse-glow" />
+                        )}
+                      </div>
+                      <Badge
+                        variant={bot.status === 'active' ? 'default' : 'secondary'}
+                        className={bot.status === 'active' ? 'bg-success shadow-glow' : 'bg-muted'}
+                      >
+                        {bot.status === 'active' ? '● Ativo' : 'Inativo'}
+                      </Badge>
                     </div>
-                    <Badge
-                      variant={bot.status === 'active' ? 'default' : 'secondary'}
-                      className={bot.status === 'active' ? 'bg-success shadow-glow' : 'bg-muted'}
-                    >
-                      {bot.status === 'active' ? '● Ativo' : 'Inativo'}
-                    </Badge>
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl flex items-center gap-2">
-                      {bot.name}
-                      {bot.status === 'active' && <Zap className="h-4 w-4 text-primary" />}
-                    </CardTitle>
-                    <CardDescription className="mt-2">{bot.description}</CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4 relative z-10">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="glass p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Mensagens</p>
-                      <p className="text-lg font-bold">
-                        <AnimatedCounter value={bot.messagesCount} />
-                      </p>
+                    <div>
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        {bot.name}
+                        {bot.status === 'active' && <Zap className="h-4 w-4 text-primary" />}
+                      </CardTitle>
+                      <CardDescription className="mt-2">{bot.description}</CardDescription>
                     </div>
-                    <div className="glass p-3 rounded-lg">
-                      <p className="text-xs text-muted-foreground mb-1">Usuários</p>
-                      <p className="text-lg font-bold">
-                        <AnimatedCounter value={bot.usersCount} />
-                      </p>
-                    </div>
-                  </div>
+                  </CardHeader>
 
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1 hover-glow"
-                      onClick={() => navigate(`/bot/${bot.id}/${bot.toolType}`)}
-                    >
-                      <Edit className="mr-2 h-3 w-3" />
-                      Editar
-                    </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 hover-glow"
-                    onClick={() => navigate(`/bot/${bot.id}/${bot.toolType}`)}
-                  >
-                    <BarChart3 className="mr-2 h-3 w-3" />
-                    Detalhes
-                  </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="hover:bg-destructive/10 hover:text-destructive transition-smooth"
-                      onClick={() => handleDelete(bot.id, bot.name)}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                  <CardContent className="space-y-4 relative z-10 flex-1 flex flex-col">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="glass p-3 rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">Mensagens</p>
+                        <p className="text-lg font-bold">
+                          <AnimatedCounter value={bot.messagesCount} />
+                        </p>
+                      </div>
+                      <div className="glass p-3 rounded-lg">
+                        <p className="text-xs text-muted-foreground mb-1">Usuários</p>
+                        <p className="text-lg font-bold">
+                          <AnimatedCounter value={bot.usersCount} />
+                        </p>
+                      </div>
+                    </div>
+
+                    <Separator className="bg-border/50" />
+
+                    <div className="space-y-2 flex-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Funções Exclusivas
+                      </p>
+                      <div className="space-y-2">
+                        {features.map((feature, index) => {
+                          const Icon = feature.icon;
+                          return (
+                            <div
+                              key={index}
+                              className="flex items-start gap-3 p-2 rounded-lg bg-background/50 hover:bg-background/80 transition-smooth"
+                            >
+                              <div className="p-1.5 rounded-md bg-primary/10 shrink-0">
+                                <Icon className="h-3.5 w-3.5 text-primary" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium leading-none mb-0.5">
+                                  {feature.label}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {feature.description}
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 hover-glow"
+                        onClick={() => navigate(`/bot/${bot.id}/${bot.toolType}`)}
+                      >
+                        <Edit className="mr-2 h-3 w-3" />
+                        Editar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 hover-glow"
+                        onClick={() => navigate(`/bot/${bot.id}/${bot.toolType}`)}
+                      >
+                        <BarChart3 className="mr-2 h-3 w-3" />
+                        Detalhes
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="hover:bg-destructive/10 hover:text-destructive transition-smooth"
+                        onClick={() => handleDelete(bot.id, bot.name)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {filteredBots.length === 0 && (
