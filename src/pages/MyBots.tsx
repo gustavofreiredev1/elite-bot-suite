@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon } from 'lucide-react';
+import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon, Shield, CheckCircle2, XCircle } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,8 @@ import { toast } from 'sonner';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { getToolFeatures, toolColors } from '@/config/toolFeatures';
 import { Separator } from '@/components/ui/separator';
+import { useTelegramConfigStore } from '@/store/telegramConfigStore';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const container = {
   hidden: { opacity: 0 },
@@ -31,6 +33,7 @@ export default function MyBots() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
   const [bots, setBots] = useState(mockBots);
+  const { config, isConfigured } = useTelegramConfigStore();
 
   const filteredBots = bots.filter(
     (bot) =>
@@ -60,11 +63,46 @@ export default function MyBots() {
           actions={
             <Button onClick={() => navigate('/create-bot')} className="hover-glow">
               <Plus className="mr-2 h-4 w-4" />
-              Criar Novo Bot
+              Configurar Telegram
             </Button>
           }
         />
 
+
+        {!isConfigured() && (
+          <Alert className="border-destructive/50 bg-destructive/5">
+            <XCircle className="h-4 w-4 text-destructive" />
+            <AlertDescription className="flex items-center justify-between">
+              <span>
+                <strong>Configuração necessária:</strong> Configure suas credenciais do Telegram para usar os bots.
+              </span>
+              <Button 
+                size="sm" 
+                onClick={() => navigate('/create-bot')}
+                className="ml-4"
+              >
+                Configurar Agora
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {isConfigured() && config && (
+          <Alert className="border-success/50 bg-success/5">
+            <CheckCircle2 className="h-4 w-4 text-success" />
+            <AlertDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <strong>Telegram configurado!</strong> Conectado como {config.phoneNumber}
+                </div>
+                <Badge variant="outline" className="border-success text-success">
+                  <Shield className="h-3 w-3 mr-1" />
+                  Ativo
+                </Badge>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />

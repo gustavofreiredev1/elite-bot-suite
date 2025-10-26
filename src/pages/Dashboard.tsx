@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap, Home } from 'lucide-react';
+import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap, Home, Shield, ArrowRight } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,6 +9,9 @@ import MainLayout from '@/layouts/MainLayout';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import ProgressBar from '@/components/ProgressBar';
 import GlassCard from '@/components/GlassCard';
+import { useTelegramConfigStore } from '@/store/telegramConfigStore';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
 
@@ -26,6 +29,9 @@ const item = {
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const { isConfigured } = useTelegramConfigStore();
+  
   const statCards = [
     { label: 'Total de Bots', value: mockStats.totalBots, icon: Bot, color: 'text-primary' },
     { label: 'Bots Ativos', value: mockStats.activeBots, icon: Activity, color: 'text-success' },
@@ -47,6 +53,57 @@ export default function Dashboard() {
           icon={Home}
           breadcrumbs={[{ label: 'Dashboard' }]}
         />
+
+        {/* Welcome Card for Non-Configured Users */}
+        {!isConfigured() && (
+          <motion.div variants={item}>
+            <Card className="border-primary/50 bg-gradient-to-br from-primary/10 to-primary/5 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+              <CardHeader className="relative z-10">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-6 w-6 text-primary" />
+                      <CardTitle className="text-2xl">Bem-vindo ao Elite Bot Suite!</CardTitle>
+                    </div>
+                    <CardDescription className="text-base">
+                      Para começar a usar todos os 17 bots disponíveis, você precisa configurar suas credenciais do Telegram.
+                    </CardDescription>
+                  </div>
+                  <Zap className="h-12 w-12 text-primary opacity-50" />
+                </div>
+              </CardHeader>
+              <CardContent className="relative z-10">
+                <div className="flex flex-col gap-4">
+                  <div className="grid gap-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-success" />
+                      <span>Acesse <strong>my.telegram.org</strong> para obter suas credenciais</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-success" />
+                      <span>Configure uma única vez e use em todos os bots</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-success" />
+                      <span>Suas credenciais ficam salvas localmente no navegador</span>
+                    </div>
+                  </div>
+                  <Button 
+                    onClick={() => navigate('/create-bot')} 
+                    className="w-fit hover-glow"
+                    size="lg"
+                  >
+                    <Shield className="mr-2 h-4 w-4" />
+                    Configurar Telegram Agora
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         <div className="flex justify-end">
           <Select defaultValue="7d">
             <SelectTrigger className="w-[180px] bg-card border-border">
