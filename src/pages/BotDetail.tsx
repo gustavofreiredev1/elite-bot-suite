@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Edit, Trash2, Power, Copy, ExternalLink, Activity, Users, MessageSquare, Bot, PlayCircle, BookOpen, TrendingUp, Zap, CheckCircle2, AlertCircle, Info, Clock } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, Power, Copy, ExternalLink, Activity, Users, MessageSquare, Bot, PlayCircle, BookOpen, TrendingUp, Zap, CheckCircle2, AlertCircle, Info, Clock, Wrench } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,10 +13,28 @@ import StatusBadge from '@/components/StatusBadge';
 import StatCard from '@/components/StatCard';
 import ChartCard from '@/components/ChartCard';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { mockBots, mockChartData } from '@/mocks/mockData';
+import { mockBots, mockChartData, ToolType } from '@/mocks/mockData';
+import { getToolFeatures } from '@/config/toolFeatures';
+import SuperBotTab from '@/components/SuperBotTab';
+import AutoPayTab from '@/components/AutoPayTab';
+import AutoPostTab from '@/components/AutoPostTab';
+import CreateSessionsTab from '@/components/CreateSessionsTab';
+import AddMembersTab from '@/components/AddMembersTab';
+import TCloneTab from '@/components/TCloneTab';
+import ViewsTrackingTab from '@/components/ViewsTrackingTab';
+import MassSenderTab from '@/components/MassSenderTab';
+import UserScraperTab from '@/components/UserScraperTab';
+import PollBotTab from '@/components/PollBotTab';
+import MessageBackupTab from '@/components/MessageBackupTab';
+import InactiveCleanerTab from '@/components/InactiveCleanerTab';
+import MediaExtractorTab from '@/components/MediaExtractorTab';
+import AccountGeneratorTab from '@/components/AccountGeneratorTab';
+import AutoReactTab from '@/components/AutoReactTab';
+import SecurityBotTab from '@/components/SecurityBotTab';
+import MassReactTab from '@/components/MassReactTab';
 
 export default function BotDetail() {
-  const { id } = useParams();
+  const { id, toolType } = useParams();
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState(true);
   const [logs, setLogs] = useState<Array<{ time: string; type: string; message: string; status: 'running' | 'success' | 'error' | 'warning' }>>([]);
@@ -70,6 +88,50 @@ export default function BotDetail() {
     toast.success('Bot deletado com sucesso!');
     navigate('/my-bots');
   };
+
+  // Renderizar componente específico da ferramenta
+  const renderToolComponent = () => {
+    switch (toolType as ToolType) {
+      case 'superbot':
+        return <SuperBotTab />;
+      case 'autopay':
+        return <AutoPayTab />;
+      case 'autopost':
+        return <AutoPostTab />;
+      case 'sessions':
+        return <CreateSessionsTab />;
+      case 'addmembers':
+        return <AddMembersTab />;
+      case 'tclone':
+        return <TCloneTab />;
+      case 'views':
+        return <ViewsTrackingTab />;
+      case 'masssender':
+        return <MassSenderTab />;
+      case 'userscraper':
+        return <UserScraperTab />;
+      case 'pollbot':
+        return <PollBotTab />;
+      case 'messagebackup':
+        return <MessageBackupTab />;
+      case 'inactivecleaner':
+        return <InactiveCleanerTab />;
+      case 'mediaextractor':
+        return <MediaExtractorTab />;
+      case 'accountgen':
+        return <AccountGeneratorTab />;
+      case 'autoreact':
+        return <AutoReactTab />;
+      case 'security':
+        return <SecurityBotTab />;
+      case 'massreact':
+        return <MassReactTab />;
+      default:
+        return <div className="text-center text-muted-foreground py-12">Ferramenta não encontrada</div>;
+    }
+  };
+
+  const features = getToolFeatures(bot.toolType);
 
   return (
     <MainLayout>
@@ -129,14 +191,62 @@ export default function BotDetail() {
           />
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="bg-muted grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+        <Tabs defaultValue="tool" className="space-y-6">
+          <TabsList className="bg-muted grid w-full grid-cols-6">
+            <TabsTrigger value="tool">Ferramenta</TabsTrigger>
             <TabsTrigger value="tutorial">Tutorial</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="logs">Logs em Tempo Real</TabsTrigger>
+            <TabsTrigger value="logs">Logs Tempo Real</TabsTrigger>
+            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="config">Configurações</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="tool" className="space-y-6">
+            <Card className="card-elegant">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wrench className="h-5 w-5 text-primary" />
+                  {bot.name} - Ferramenta em Execução
+                </CardTitle>
+                <CardDescription>
+                  Use esta ferramenta para {bot.description.toLowerCase()}. Todas as configurações e ações são realizadas em tempo real.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {renderToolComponent()}
+              </CardContent>
+            </Card>
+
+            <Card className="card-elegant bg-primary/5 border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Info className="h-5 w-5 text-primary" />
+                  Funcionalidades Desta Ferramenta
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {features.map((feature, index) => {
+                    const Icon = feature.icon;
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-border/50"
+                      >
+                        <div className="p-2 rounded-md bg-primary/10 shrink-0">
+                          <Icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold mb-1">{feature.label}</p>
+                          <p className="text-sm text-muted-foreground">{feature.description}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="overview" className="space-y-6">
             <ChartCard title="Atividade dos Últimos 7 Dias" description="Mensagens processadas por dia">
