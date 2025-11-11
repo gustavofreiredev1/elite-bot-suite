@@ -1,217 +1,280 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Play, Trash2, Edit, Zap, GitBranch, Repeat } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import MainLayout from '@/layouts/MainLayout';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Bot, Plus, Play, Pause, Settings, Trash2, Save, Zap } from 'lucide-react';
 import { toast } from 'sonner';
-import MainLayout from '@/layouts/MainLayout';
-import GlassCard from '@/components/GlassCard';
+import ReactFlow, {
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Connection,
+  Edge,
+  BackgroundVariant,
+  Panel,
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+import { CustomNode } from '@/components/flow/CustomNode';
+import NodeToolbar, { NodeConfigPanel } from '@/components/flow/NodeToolbar';
 
-interface Automation {
-  id: string;
-  name: string;
-  trigger: string;
-  action: string;
-  status: 'active' | 'inactive';
-  executions: number;
-}
+const nodeTypes = {
+  custom: CustomNode,
+};
 
-const mockAutomations: Automation[] = [
+const initialNodes = [
   {
     id: '1',
-    name: 'Boas-vindas Automáticas',
-    trigger: 'Recebe /start',
-    action: 'Enviar mensagem de boas-vindas',
-    status: 'active',
-    executions: 450,
-  },
-  {
-    id: '2',
-    name: 'Resposta Fora do Horário',
-    trigger: 'Mensagem após 18h',
-    action: 'Enviar horário de atendimento',
-    status: 'active',
-    executions: 128,
-  },
-  {
-    id: '3',
-    name: 'Adicionar ao Grupo',
-    trigger: 'Comando /grupo',
-    action: 'Enviar link do grupo',
-    status: 'inactive',
-    executions: 67,
+    type: 'custom',
+    data: {
+      label: 'Novo Membro',
+      type: 'trigger',
+      description: 'Quando um novo membro entra no grupo',
+      config: { triggerType: 'new_member' },
+    },
+    position: { x: 250, y: 50 },
   },
 ];
 
-export default function Automations() {
-  const [automations, setAutomations] = useState(mockAutomations);
+const initialEdges: Edge[] = [];
 
-  const handleTest = (name: string) => {
-    toast.success(`Automação "${name}" executada com sucesso!`);
+export default function Automations() {
+  const navigate = useNavigate();
+  const [showFlow, setShowFlow] = useState(false);
+  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const [automations, setAutomations] = useState([
+    {
+      id: '1',
+      name: 'Boas-vindas Automáticas',
+      description: 'Envia mensagem de boas-vindas para novos membros',
+      status: 'active',
+      triggers: 3,
+      actions: 5,
+    },
+    {
+      id: '2',
+      name: 'Resposta Automática FAQ',
+      description: 'Responde perguntas frequentes automaticamente',
+      status: 'paused',
+      triggers: 10,
+      actions: 15,
+    },
+  ]);
+
+  const onConnect = useCallback(
+    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+  const onAddNode = (type: string) => {
+    const newNode = {
+      id: `${nodes.length + 1}`,
+      type: 'custom',
+      data: {
+        label: `Novo ${type}`,
+        type,
+        description: 'Configure este nó',
+        config: { triggerType: 'default' },
+      },
+      position: {
+        x: Math.random() * 400 + 100,
+        y: Math.random() * 400 + 100,
+      },
+    };
+    setNodes((nds) => [...nds, newNode] as any);
+    toast.success('Nó adicionado!');
   };
 
-  const handleDelete = (id: string, name: string) => {
-    if (confirm(`Tem certeza que deseja deletar a automação "${name}"?`)) {
-      setAutomations(automations.filter((auto) => auto.id !== id));
-      toast.success('Automação deletada!');
-    }
+  const onUpdateNode = (id: string, data: any) => {
+    setNodes((nds) =>
+      nds.map((node) => (node.id === id ? { ...node, data } : node))
+    );
+  };
+
+  const onNodeClick = (_event: React.MouseEvent, node: any) => {
+    setSelectedNode(node);
+  };
+
+  const saveFlow = () => {
+    toast.success('Fluxo salvo com sucesso!', {
+      description: 'Seu fluxo de automação foi salvo.',
+    });
+  };
+
+  const toggleStatus = (id: string) => {
+    setAutomations(
+      automations.map((auto) =>
+        auto.id === id
+          ? { ...auto, status: auto.status === 'active' ? 'paused' : 'active' }
+          : auto
+      )
+    );
+    toast.success('Status atualizado!');
+  };
+
+  const deleteAutomation = (id: string) => {
+    setAutomations(automations.filter((auto) => auto.id !== id));
+    toast.success('Automação removida!');
   };
 
   return (
     <MainLayout>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-6"
-      >
-        <PageHeader
-          title="Automações"
-          description="Configure fluxos automáticos para seus bots"
-          icon={Repeat}
-          breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Automações' }]}
-          actions={
-            <Button className="hover-glow">
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Automação
-            </Button>
-          }
-        />
+      <PageHeader
+        title="Automações"
+        description="Configure e gerencie suas automações do Telegram"
+        icon={Bot}
+      />
 
-        <Card className="card-elegant relative overflow-hidden">
-          <div className="absolute inset-0 gradient-mesh opacity-30" />
-          <CardHeader className="relative z-10">
-            <CardTitle className="flex items-center gap-2">
-              <GitBranch className="h-5 w-5 text-primary" />
-              Builder Visual
-            </CardTitle>
-            <CardDescription>Arraste e conecte os blocos para criar fluxos automáticos</CardDescription>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 min-h-[300px] p-6 border-2 border-dashed border-primary/30 rounded-xl bg-background/50">
-              <motion.div
-                whileHover={{ scale: 1.05, rotate: 2 }}
-                whileTap={{ scale: 0.95 }}
-                className="glass-strong p-6 rounded-xl cursor-move space-y-3 hover-glow group"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-sm font-bold shadow-glow">
-                  1
+      <div className="space-y-6">
+        <div className="flex justify-end gap-4">
+          <Button
+            onClick={() => setShowFlow(!showFlow)}
+            variant={showFlow ? 'secondary' : 'default'}
+          >
+            <Zap className="mr-2 h-4 w-4" />
+            {showFlow ? 'Ver Lista' : 'Editor Visual'}
+          </Button>
+          <Button onClick={() => navigate('/create-bot')}>
+            <Plus className="mr-2 h-4 w-4" />
+            Nova Automação
+          </Button>
+        </div>
+
+        {showFlow ? (
+          <Card className="p-0 overflow-hidden">
+            <CardHeader className="border-b">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Editor de Fluxo Visual</CardTitle>
+                  <CardDescription>
+                    Arraste e conecte nós para criar automações complexas
+                  </CardDescription>
                 </div>
-                <h4 className="font-semibold text-lg">Gatilho</h4>
-                <p className="text-sm text-muted-foreground">Quando receber /start</p>
-                <Badge className="bg-primary/20 text-primary">Evento</Badge>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05, rotate: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="glass-strong p-6 rounded-xl cursor-move space-y-3 hover-glow group"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-sm font-bold shadow-glow">
-                  2
+                <Button onClick={saveFlow}>
+                  <Save className="mr-2 h-4 w-4" />
+                  Salvar Fluxo
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="h-[600px] flex">
+                <div className="flex-1">
+                  <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    onNodeClick={onNodeClick}
+                    nodeTypes={nodeTypes}
+                    fitView
+                    className="bg-muted/30"
+                  >
+                    <Controls />
+                    <MiniMap
+                      nodeColor={(node) => {
+                        switch (node.data.type) {
+                          case 'trigger':
+                            return 'rgb(34 197 94)';
+                          case 'message':
+                            return 'hsl(var(--primary))';
+                          case 'delay':
+                            return 'rgb(245 158 11)';
+                          case 'condition':
+                            return 'rgb(168 85 247)';
+                          case 'action':
+                            return 'rgb(59 130 246)';
+                          default:
+                            return 'rgb(156 163 175)';
+                        }
+                      }}
+                      className="bg-background"
+                    />
+                    <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+                    <Panel position="top-left" className="bg-background/80 backdrop-blur p-2 rounded-lg">
+                      <div className="text-sm text-muted-foreground">
+                        <strong>Dica:</strong> Clique em um nó para configurá-lo
+                      </div>
+                    </Panel>
+                  </ReactFlow>
                 </div>
-                <h4 className="font-semibold text-lg">Ação</h4>
-                <p className="text-sm text-muted-foreground">Enviar mensagem personalizada</p>
-                <Badge className="bg-secondary/20 text-secondary">Resposta</Badge>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.05, rotate: 2 }}
-                whileTap={{ scale: 0.95 }}
-                className="glass-strong p-6 rounded-xl cursor-move space-y-3 hover-glow group"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-sm font-bold shadow-glow">
-                  3
+                <div className="border-l">
+                  {selectedNode ? (
+                    <NodeConfigPanel
+                      selectedNode={selectedNode}
+                      onUpdateNode={onUpdateNode}
+                      onClose={() => setSelectedNode(null)}
+                    />
+                  ) : (
+                    <NodeToolbar onAddNode={onAddNode} />
+                  )}
                 </div>
-                <h4 className="font-semibold text-lg">Condição</h4>
-                <p className="text-sm text-muted-foreground">Se usuário é novo</p>
-                <Badge className="bg-accent/20 text-accent">Lógica</Badge>
-              </motion.div>
-            </div>
-            <div className="mt-6 flex items-center justify-center gap-2">
-              <Zap className="h-4 w-4 text-primary animate-pulse-glow" />
-              <p className="text-sm text-muted-foreground">
-                Arraste os blocos acima para criar seu fluxo de automação
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Automações Criadas</h2>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
           <div className="grid gap-4">
-            {automations.map((auto, index) => (
-              <motion.div
-                key={auto.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.01, x: 4 }}
-              >
-                <Card className="card-glow group relative overflow-hidden">
-                  <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <CardHeader className="relative z-10">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <CardTitle className="flex items-center gap-2">
-                          {auto.name}
-                          <Badge
-                            variant={auto.status === 'active' ? 'default' : 'secondary'}
-                            className={auto.status === 'active' ? 'bg-success shadow-glow' : 'bg-muted'}
-                          >
-                            {auto.status === 'active' ? '● Ativo' : 'Inativo'}
-                          </Badge>
-                        </CardTitle>
-                        <CardDescription className="flex items-center gap-2">
-                          <Zap className="h-3 w-3 text-primary" />
-                          {auto.executions.toLocaleString()} execuções
-                        </CardDescription>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleTest(auto.name)}
-                          className="hover-glow"
-                        >
+            {automations.map((auto) => (
+              <Card key={auto.id}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        {auto.name}
+                        <Badge variant={auto.status === 'active' ? 'default' : 'secondary'}>
+                          {auto.status === 'active' ? 'Ativo' : 'Pausado'}
+                        </Badge>
+                      </CardTitle>
+                      <CardDescription>{auto.description}</CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => toggleStatus(auto.id)}
+                      >
+                        {auto.status === 'active' ? (
+                          <Pause className="h-4 w-4" />
+                        ) : (
                           <Play className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="sm" className="hover-glow">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(auto.id, auto.name)}
-                          className="hover:bg-destructive/10 hover:text-destructive transition-smooth"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                        )}
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => deleteAutomation(auto.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                  </CardHeader>
-                  <CardContent className="relative z-10">
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-2 flex-1">
-                        <div className="w-2 h-2 rounded-full bg-primary shadow-glow" />
-                        <span className="text-muted-foreground">Gatilho:</span>
-                        <span className="font-medium">{auto.trigger}</span>
-                      </div>
-                      <div className="text-muted-foreground">→</div>
-                      <div className="flex items-center gap-2 flex-1">
-                        <div className="w-2 h-2 rounded-full bg-secondary shadow-glow" />
-                        <span className="text-muted-foreground">Ação:</span>
-                        <span className="font-medium">{auto.action}</span>
-                      </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                    <div>
+                      <span className="font-medium">{auto.triggers}</span> Gatilhos
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                    <div>
+                      <span className="font-medium">{auto.actions}</span> Ações
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </div>
-      </motion.div>
+        )}
+      </div>
     </MainLayout>
   );
 }

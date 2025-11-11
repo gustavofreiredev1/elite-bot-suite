@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon, Shield, CheckCircle2, XCircle } from 'lucide-react';
+import { Edit, Trash2, BarChart3, Search, Plus, Zap, Bot as BotIcon, Shield, CheckCircle2, XCircle, Crown } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { mockBots } from '@/mocks/mockData';
 import MainLayout from '@/layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import PlansModal from '@/components/PlansModal';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { getToolFeatures, toolColors } from '@/config/toolFeatures';
 import { Separator } from '@/components/ui/separator';
@@ -34,6 +35,7 @@ export default function MyBots() {
   const navigate = useNavigate();
   const [bots, setBots] = useState(mockBots);
   const { config, isConfigured } = useTelegramConfigStore();
+  const [showPlansModal, setShowPlansModal] = useState(false);
 
   const filteredBots = bots.filter(
     (bot) =>
@@ -61,10 +63,16 @@ export default function MyBots() {
           icon={BotIcon}
           breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Meus Bots' }]}
           actions={
-            <Button onClick={() => navigate('/create-bot')} className="hover-glow">
-              <Plus className="mr-2 h-4 w-4" />
-              Configurar Telegram
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowPlansModal(true)} className="hover-glow">
+                <Crown className="mr-2 h-4 w-4" />
+                Ver Planos
+              </Button>
+              <Button onClick={() => navigate('/create-bot')} className="hover-glow">
+                <Plus className="mr-2 h-4 w-4" />
+                Configurar Telegram
+              </Button>
+            </div>
           }
         />
 
@@ -246,6 +254,8 @@ export default function MyBots() {
           </div>
         )}
       </motion.div>
+
+      <PlansModal open={showPlansModal} onOpenChange={setShowPlansModal} />
     </MainLayout>
   );
 }

@@ -12,6 +12,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import StatusBadge from '@/components/StatusBadge';
 import StatCard from '@/components/StatCard';
 import ChartCard from '@/components/ChartCard';
+import PlanGuard from '@/components/PlanGuard';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { mockBots, mockChartData, ToolType } from '@/mocks/mockData';
 import { getToolFeatures } from '@/config/toolFeatures';
@@ -202,20 +203,22 @@ export default function BotDetail() {
           </TabsList>
 
           <TabsContent value="tool" className="space-y-6">
-            <Card className="card-elegant">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Wrench className="h-5 w-5 text-primary" />
-                  {bot.name} - Ferramenta em Execução
-                </CardTitle>
-                <CardDescription>
-                  Use esta ferramenta para {bot.description.toLowerCase()}. Todas as configurações e ações são realizadas em tempo real.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {renderToolComponent()}
-              </CardContent>
-            </Card>
+            <PlanGuard botId={toolType || 'unknown'}>
+              <Card className="card-elegant">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Wrench className="h-5 w-5 text-primary" />
+                    {bot.name} - Ferramenta em Execução
+                  </CardTitle>
+                  <CardDescription>
+                    Use esta ferramenta para {bot.description.toLowerCase()}. Todas as configurações e ações são realizadas em tempo real.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {renderToolComponent()}
+                </CardContent>
+              </Card>
+            </PlanGuard>
 
             <Card className="card-elegant bg-primary/5 border-primary/20">
               <CardHeader>
