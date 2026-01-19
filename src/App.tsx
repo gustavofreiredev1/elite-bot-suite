@@ -2,7 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateBot from "./pages/CreateBot";
@@ -14,6 +15,8 @@ import Automations from "./pages/Automations";
 import Messages from "./pages/Messages";
 import Settings from "./pages/Settings";
 import Support from "./pages/Support";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
@@ -26,8 +29,10 @@ const App = () => (
       <Sonner position="top-right" />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route
             path="/dashboard"
             element={
