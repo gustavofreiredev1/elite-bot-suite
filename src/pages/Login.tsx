@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Loader2 } from 'lucide-react';
+import { Mail, Lock, Loader2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,12 +15,14 @@ import Logo from '@/components/Logo';
 import AuthLayout from '@/layouts/AuthLayout';
 
 const loginSchema = z.object({
-  email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
+  email: z.string().trim().email('Email inválido').max(255),
+  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').max(128),
 });
 
-const registerSchema = loginSchema.extend({
-  name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
+const registerSchema = z.object({
+  name: z.string().trim().min(2, 'Nome deve ter no mínimo 2 caracteres').max(100),
+  email: z.string().trim().email('Email inválido').max(255),
+  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres').max(128),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -29,7 +31,7 @@ type RegisterForm = z.infer<typeof registerSchema>;
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
+  const { login, register, resetPassword } = useAuthStore();
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -47,8 +49,13 @@ export default function Login() {
       await login(data.email, data.password);
       toast.success('Bem-vindo ao BOT ELITE!');
       navigate('/dashboard');
-    } catch (error) {
-      toast.error('Erro ao fazer login');
+    } catch (error: any) {
+      const msg = error?.message?.includes('Invalid login')
+        ? 'Email ou senha incorretos'
+        : error?.message?.includes('Email not confirmed')
+        ? 'Confirme seu email antes de entrar'
+        : 'Erro ao fazer login';
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
@@ -57,14 +64,29 @@ export default function Login() {
   const onRegister = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await login(data.email, data.password);
-      toast.success('Conta criada com sucesso!');
-      navigate('/dashboard');
-    } catch (error) {
-      toast.error('Erro ao criar conta');
+      await register(data.email, data.password, data.name);
+      toast.success('Conta criada! Verifique seu email para confirmar o cadastro.');
+    } catch (error: any) {
+      const msg = error?.message?.includes('already registered')
+        ? 'Este email já está cadastrado'
+        : 'Erro ao criar conta';
+      toast.error(msg);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const onForgotPassword = async () => {
+    const email = loginForm.getValues('email');
+    if (!email) {
+      toast.error('Preencha o campo de email primeiro');
+      return;
+    }
+    try {
+      await resetPassword(email);
+      toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
+    } catch {
+      toast.error('Erro ao enviar email de recuperação');
     }
   };
 
@@ -137,7 +159,7 @@ export default function Login() {
                 <button
                   type="button"
                   className="text-xs text-muted-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
-                  onClick={() => toast.info('Funcionalidade disponível em breve. Entre em contato pelo suporte.')}
+                  onClick={onForgotPassword}
                 >
                   Esqueceu sua senha?
                 </button>
@@ -149,12 +171,16 @@ export default function Login() {
             <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="register-name">Nome</Label>
-                <Input
-                  id="register-name"
-                  type="text"
-                  placeholder="Seu nome"
-                  {...registerForm.register('name')}
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="register-name"
+                    type="text"
+                    placeholder="Seu nome"
+                    className="pl-10"
+                    {...registerForm.register('name')}
+                  />
+                </div>
                 {registerForm.formState.errors.name && (
                   <p className="text-xs text-destructive">{registerForm.formState.errors.name.message}</p>
                 )}
