@@ -132,6 +132,16 @@ export default function Login() {
                   'Entrar'
                 )}
               </Button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  className="text-xs text-muted-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
+                  onClick={() => toast.info('Funcionalidade disponível em breve. Entre em contato pelo suporte.')}
+                >
+                  Esqueceu sua senha?
+                </button>
+              </div>
             </form>
           </TabsContent>
 

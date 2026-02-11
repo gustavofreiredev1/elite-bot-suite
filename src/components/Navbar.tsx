@@ -1,4 +1,4 @@
-import { Menu, LogOut, Settings, User } from 'lucide-react';
+import { Menu, LogOut, Settings, User, Bell } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Logo from './Logo';
+import PlanStatusBadge from './PlanStatusBadge';
 import { useNavigate } from 'react-router-dom';
 
 interface NavbarProps {
@@ -41,7 +42,15 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           <Logo size="sm" />
         </div>
 
-        <DropdownMenu>
+        <div className="flex items-center gap-2">
+          <PlanStatusBadge compact />
+          
+          <Button variant="ghost" size="icon" className="relative hover-glow">
+            <Bell className="h-5 w-5" />
+            <span className="absolute top-1 right-1 h-2 w-2 bg-primary rounded-full animate-pulse" />
+          </Button>
+
+          <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full hover-glow">
               <Avatar>
@@ -75,6 +84,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </nav>
   );

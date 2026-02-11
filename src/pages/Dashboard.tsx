@@ -12,6 +12,7 @@ import GlassCard from '@/components/GlassCard';
 import { useTelegramConfigStore } from '@/store/telegramConfigStore';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import OnboardingGuide from '@/components/OnboardingGuide';
 
 const COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
 
@@ -48,11 +49,13 @@ export default function Dashboard() {
         className="space-y-6"
       >
         <PageHeader
-          title="Dashboard"
+          title="Painel"
           description="Visão geral da sua operação"
           icon={Home}
-          breadcrumbs={[{ label: 'Dashboard' }]}
+          breadcrumbs={[{ label: 'Painel' }]}
         />
+
+        <OnboardingGuide />
 
         {/* Welcome Card for Non-Configured Users */}
         {!isConfigured() && (
