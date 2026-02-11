@@ -1,27 +1,22 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap, Home, Shield, ArrowRight } from 'lucide-react';
+import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap, Home, Plus, ArrowRight } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { mockStats, mockChartData, mockCommandData } from '@/mocks/mockData';
+import { Button } from '@/components/ui/button';
 import MainLayout from '@/layouts/MainLayout';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import ProgressBar from '@/components/ProgressBar';
 import GlassCard from '@/components/GlassCard';
-import { useTelegramConfigStore } from '@/store/telegramConfigStore';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
 import OnboardingGuide from '@/components/OnboardingGuide';
-
-const COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe'];
+import { useNavigate } from 'react-router-dom';
+import { getUserBots } from '@/lib/telegram';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuthStore } from '@/store/authStore';
 
 const container = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const item = {
@@ -31,25 +26,53 @@ const item = {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { isConfigured } = useTelegramConfigStore();
-  
+  const { profile } = useAuthStore();
+  const [stats, setStats] = useState({ totalBots: 0, activeBots: 0, totalMessages: 0, totalFlows: 0 });
+  const [hasBots, setHasBots] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const bots = await getUserBots();
+        const totalBots = bots?.length || 0;
+        const activeBots = bots?.filter((b: any) => b.status === 'connected').length || 0;
+        setHasBots(totalBots > 0);
+
+        // Get message count
+        const { count: msgCount } = await supabase
+          .from('messages')
+          .select('*', { count: 'exact', head: true });
+
+        // Get flow count
+        const { count: flowCount } = await supabase
+          .from('bot_flows')
+          .select('*', { count: 'exact', head: true });
+
+        setStats({
+          totalBots,
+          activeBots,
+          totalMessages: msgCount || 0,
+          totalFlows: flowCount || 0,
+        });
+      } catch {
+        // Silently fail
+      }
+    };
+    loadStats();
+  }, []);
+
   const statCards = [
-    { label: 'Total de Bots', value: mockStats.totalBots, icon: Bot, color: 'text-primary' },
-    { label: 'Bots Ativos', value: mockStats.activeBots, icon: Activity, color: 'text-success' },
-    { label: 'Mensagens Enviadas', value: mockStats.totalMessages.toLocaleString(), icon: MessageSquare, color: 'text-secondary' },
-    { label: 'Automações', value: mockStats.totalAutomations, icon: Repeat, color: 'text-accent' },
+    { label: 'Total de Bots', value: stats.totalBots, icon: Bot, color: 'text-primary' },
+    { label: 'Bots Ativos', value: stats.activeBots, icon: Activity, color: 'text-success' },
+    { label: 'Mensagens', value: stats.totalMessages, icon: MessageSquare, color: 'text-secondary' },
+    { label: 'Automações', value: stats.totalFlows, icon: Repeat, color: 'text-accent' },
   ];
 
   return (
     <MainLayout>
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="space-y-6"
-      >
+      <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
         <PageHeader
-          title="Painel"
+          title={`Olá, ${profile?.full_name || 'Usuário'}!`}
           description="Visão geral da sua operação"
           icon={Home}
           breadcrumbs={[{ label: 'Painel' }]}
@@ -57,48 +80,39 @@ export default function Dashboard() {
 
         <OnboardingGuide />
 
-        {/* Welcome Card for Non-Configured Users */}
-        {!isConfigured() && (
+        {hasBots === false && (
           <motion.div variants={item}>
             <Card className="border-primary/50 bg-gradient-to-br from-primary/10 to-primary/5 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-              <CardHeader className="relative z-10">
+              <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Shield className="h-6 w-6 text-primary" />
-                      <CardTitle className="text-2xl">Bem-vindo ao Elite Bot Suite!</CardTitle>
-                    </div>
+                    <CardTitle className="text-2xl">Bem-vindo ao Elite Bot Suite!</CardTitle>
                     <CardDescription className="text-base">
-                      Para começar a usar todos os 17 bots disponíveis, você precisa configurar suas credenciais do Telegram.
+                      Conecte seu primeiro bot do Telegram para começar.
                     </CardDescription>
                   </div>
                   <Zap className="h-12 w-12 text-primary opacity-50" />
                 </div>
               </CardHeader>
-              <CardContent className="relative z-10">
+              <CardContent>
                 <div className="flex flex-col gap-4">
-                  <div className="grid gap-3 text-sm">
+                  <div className="grid gap-2 text-sm">
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full bg-success" />
-                      <span>Acesse <strong>my.telegram.org</strong> para obter suas credenciais</span>
+                      <span>Abra o <strong>@BotFather</strong> no Telegram</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full bg-success" />
-                      <span>Configure uma única vez e use em todos os bots</span>
+                      <span>Crie um bot com <code>/newbot</code></span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="h-2 w-2 rounded-full bg-success" />
-                      <span>Suas credenciais ficam salvas localmente no navegador</span>
+                      <span>Cole o token aqui e comece a usar</span>
                     </div>
                   </div>
-                  <Button 
-                    onClick={() => navigate('/create-bot')} 
-                    className="w-fit hover-glow"
-                    size="lg"
-                  >
-                    <Shield className="mr-2 h-4 w-4" />
-                    Configurar Telegram Agora
+                  <Button onClick={() => navigate('/create-bot')} className="w-fit hover-glow" size="lg">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Conectar Primeiro Bot
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
@@ -107,27 +121,10 @@ export default function Dashboard() {
           </motion.div>
         )}
 
-        <div className="flex justify-end">
-          <Select defaultValue="7d">
-            <SelectTrigger className="w-[180px] bg-card border-border">
-              <SelectValue placeholder="Período" />
-            </SelectTrigger>
-            <SelectContent className="bg-card border-border">
-              <SelectItem value="today">Hoje</SelectItem>
-              <SelectItem value="7d">Últimos 7 dias</SelectItem>
-              <SelectItem value="30d">Últimos 30 dias</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
         {/* Stats Cards */}
         <motion.div variants={item} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {statCards.map((stat, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.02, y: -4 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
+            <motion.div key={index} whileHover={{ scale: 1.02, y: -4 }} transition={{ type: 'spring', stiffness: 300 }}>
               <Card className="card-glow relative overflow-hidden group">
                 <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
@@ -138,15 +135,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent className="relative z-10">
                   <div className="text-3xl font-bold">
-                    {typeof stat.value === 'number' ? (
-                      <AnimatedCounter value={stat.value} />
-                    ) : (
-                      stat.value
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1 mt-2 text-xs text-success">
-                    <TrendingUp className="h-3 w-3" />
-                    <span>+12% vs mês anterior</span>
+                    <AnimatedCounter value={stat.value} />
                   </div>
                 </CardContent>
               </Card>
@@ -154,7 +143,29 @@ export default function Dashboard() {
           ))}
         </motion.div>
 
-        {/* Progress Indicator */}
+        {/* Quick Actions */}
+        {hasBots && (
+          <motion.div variants={item}>
+            <GlassCard glow>
+              <div className="flex flex-wrap gap-3">
+                <Button onClick={() => navigate('/create-bot')} variant="outline" className="hover-glow">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Conectar Bot
+                </Button>
+                <Button onClick={() => navigate('/automations')} variant="outline" className="hover-glow">
+                  <Zap className="mr-2 h-4 w-4" />
+                  Criar Fluxo
+                </Button>
+                <Button onClick={() => navigate('/messages')} variant="outline" className="hover-glow">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Ver Chat
+                </Button>
+              </div>
+            </GlassCard>
+          </motion.div>
+        )}
+
+        {/* System Status */}
         <motion.div variants={item}>
           <GlassCard glow>
             <div className="flex items-center gap-4">
@@ -162,94 +173,12 @@ export default function Dashboard() {
                 <Zap className="h-6 w-6 text-primary animate-pulse-glow" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold mb-1">Sistema 100% Operacional</h3>
+                <h3 className="font-semibold mb-1">Sistema Operacional</h3>
                 <ProgressBar value={100} glow className="mt-2" />
               </div>
             </div>
           </GlassCard>
         </motion.div>
-
-        {/* Charts */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          <motion.div variants={item}>
-            <Card className="card-elegant">
-              <CardHeader>
-                <CardTitle>Mensagens por Dia</CardTitle>
-                <CardDescription>Atividade dos últimos 7 dias</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={mockChartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" />
-                    <XAxis dataKey="date" stroke="#888" tick={{ fontSize: 12 }} />
-                    <YAxis stroke="#888" tick={{ fontSize: 12 }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#1a1a1a',
-                        border: '1px solid #2e2e2e',
-                        borderRadius: '8px',
-                      }}
-                    />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="messages"
-                      stroke="#3b82f6"
-                      strokeWidth={2}
-                      name="Mensagens"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="users"
-                      stroke="#60a5fa"
-                      strokeWidth={2}
-                      name="Usuários"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div variants={item}>
-            <Card className="card-elegant">
-              <CardHeader>
-                <CardTitle>Comandos Mais Usados</CardTitle>
-                <CardDescription>Distribuição de comandos</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={mockCommandData as any}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={(entry: any) => {
-                        const percent = entry.percent || 0;
-                        return `${entry.name} ${(Number(percent) * 100).toFixed(0)}%`;
-                      }}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="count"
-                    >
-                      {mockCommandData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: '#1a1a1a',
-                        border: '1px solid #2e2e2e',
-                        borderRadius: '8px',
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
       </motion.div>
     </MainLayout>
   );
