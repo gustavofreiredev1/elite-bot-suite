@@ -18,7 +18,7 @@ import MainLayout from '@/layouts/MainLayout';
 import PlansModal from '@/components/PlansModal';
 
 export default function Settings() {
-  const user = useAuthStore((state) => state.user);
+  const { user, profile } = useAuthStore();
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
   const [showPlansModal, setShowPlansModal] = useState(false);
@@ -119,9 +119,9 @@ export default function Settings() {
           <CardContent className="space-y-6">
             <div className="flex items-center gap-6">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={user?.avatar} />
+                <AvatarImage src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.email}`} />
                 <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                  {user?.name?.charAt(0).toUpperCase()}
+                  {(profile?.full_name || user?.email || 'U').charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="space-y-2">
@@ -138,11 +138,11 @@ export default function Settings() {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">Nome</Label>
-                <Input id="name" defaultValue={user?.name} className="bg-muted border-border" />
+                <Input id="name" defaultValue={profile?.full_name || ''} className="bg-muted border-border" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue={user?.email} className="bg-muted border-border" />
+                <Input id="email" type="email" defaultValue={profile?.email || user?.email} className="bg-muted border-border" />
               </div>
             </div>
 

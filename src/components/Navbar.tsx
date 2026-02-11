@@ -19,11 +19,15 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
-  const { user, logout } = useAuthStore();
+  const { profile, user, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Usuário';
+  const displayEmail = profile?.email || user?.email || '';
+  const avatarUrl = profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${displayEmail}`;
+
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
@@ -54,9 +58,9 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full hover-glow">
               <Avatar>
-                <AvatarImage src={user?.avatar} alt={user?.name} />
+                <AvatarImage src={avatarUrl} alt={displayName} />
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  {user?.name?.charAt(0).toUpperCase()}
+                  {displayName.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -64,8 +68,8 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           <DropdownMenuContent className="w-56 bg-card border-border" align="end">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user?.name}</p>
-                <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                <p className="text-sm font-medium leading-none">{displayName}</p>
+                <p className="text-xs leading-none text-muted-foreground">{displayEmail}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator className="bg-border" />
