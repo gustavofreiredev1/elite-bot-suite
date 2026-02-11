@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Bell, Shield, Globe, Upload, Settings as SettingsIcon } from 'lucide-react';
+import { User, Bell, Shield, Globe, Upload, Settings as SettingsIcon, Crown, Zap, Gift, Clock } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,14 +10,26 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/authStore';
+import { usePlanStore } from '@/store/planStore';
 import MainLayout from '@/layouts/MainLayout';
+import PlansModal from '@/components/PlansModal';
 
 export default function Settings() {
   const user = useAuthStore((state) => state.user);
   const [notifications, setNotifications] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(false);
+  const [showPlansModal, setShowPlansModal] = useState(false);
+  const {
+    hasActiveSubscription,
+    isTrialActive,
+    getTrialDaysRemaining,
+    getSubscriptionDaysRemaining,
+    getTotalBotsPurchased,
+    userPlan,
+  } = usePlanStore();
 
   const handleSave = () => {
     toast.success('Configurações salvas com sucesso!');
@@ -36,6 +48,65 @@ export default function Settings() {
           icon={SettingsIcon}
           breadcrumbs={[{ label: 'Dashboard', href: '/dashboard' }, { label: 'Configurações' }]}
         />
+
+        {/* Plan Status Card */}
+        <Card className="card-elegant border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Crown className="h-5 w-5 text-primary" />
+              Seu Plano
+            </CardTitle>
+            <CardDescription>Gerencie sua assinatura e visualize seu plano atual</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50 border border-border">
+              <div className="flex items-center gap-3">
+                {hasActiveSubscription() ? (
+                  <Badge className="bg-primary/20 text-primary border-primary/30">
+                    <Crown className="h-3 w-3 mr-1" />
+                    PRO
+                  </Badge>
+                ) : isTrialActive() ? (
+                  <Badge className="bg-secondary/20 text-secondary-foreground border-secondary/30">
+                    <Gift className="h-3 w-3 mr-1" />
+                    Trial
+                  </Badge>
+                ) : getTotalBotsPurchased() > 0 ? (
+                  <Badge className="bg-success/20 text-success border-success/30">
+                    <Zap className="h-3 w-3 mr-1" />
+                    Vitalício
+                  </Badge>
+                ) : (
+                  <Badge variant="outline">
+                    <Clock className="h-3 w-3 mr-1" />
+                    Gratuito
+                  </Badge>
+                )}
+                <div>
+                  <p className="font-medium text-sm">
+                    {hasActiveSubscription()
+                      ? `Assinatura ativa • ${getSubscriptionDaysRemaining()} dias restantes`
+                      : isTrialActive()
+                      ? `Período de teste • ${getTrialDaysRemaining()} dias restantes`
+                      : getTotalBotsPurchased() > 0
+                      ? `${getTotalBotsPurchased()} bot(s) comprado(s)`
+                      : 'Sem plano ativo'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {hasActiveSubscription()
+                      ? 'Todos os 17 bots liberados'
+                      : isTrialActive()
+                      ? 'Acesso completo durante o trial'
+                      : 'Faça upgrade para desbloquear tudo'}
+                  </p>
+                </div>
+              </div>
+              <Button onClick={() => setShowPlansModal(true)} variant={hasActiveSubscription() ? 'outline' : 'default'} className="hover-glow">
+                {hasActiveSubscription() ? 'Gerenciar' : 'Fazer Upgrade'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="card-elegant">
           <CardHeader>
@@ -176,6 +247,8 @@ export default function Settings() {
           </CardContent>
         </Card>
       </motion.div>
+
+      <PlansModal open={showPlansModal} onOpenChange={setShowPlansModal} />
     </MainLayout>
   );
 }
