@@ -1,22 +1,31 @@
-import { 
-  MessageSquare, 
-  CreditCard, 
-  Key, 
-  UserPlus, 
-  Copy, 
-  Eye, 
-  Zap, 
-  Send, 
-  Users, 
-  BarChart3, 
-  Database, 
-  UserMinus, 
-  Download, 
-  UserCog, 
-  Smile, 
-  Shield, 
-  Heart,
-  LucideIcon 
+import {
+  ShoppingCart,
+  CreditCard,
+  Crown,
+  Send,
+  UserPlus,
+  Workflow,
+  Bot,
+  Package,
+  Calendar,
+  QrCode,
+  Users,
+  BarChart3,
+  Share2,
+  TrendingUp,
+  RefreshCcw,
+  Bell,
+  Download,
+  DollarSign,
+  MessageSquare,
+  Zap,
+  Shield,
+  Tag,
+  Clock,
+  FileText,
+  Link,
+  Mail,
+  LucideIcon,
 } from 'lucide-react';
 import { ToolType } from '@/mocks/mockData';
 
@@ -27,90 +36,90 @@ export interface ToolFeature {
 }
 
 export const toolFeatures: Record<ToolType, ToolFeature[]> = {
-  autopost: [
-    { icon: MessageSquare, label: 'Agendamento', description: 'Agende posts por data/hora' },
-    { icon: Download, label: 'Mídias', description: 'Suporte a fotos e vídeos' },
-    { icon: BarChart3, label: 'Recorrência', description: 'Posts diários/semanais' },
+  'vendas-auto': [
+    { icon: ShoppingCart, label: 'Funil de Vendas', description: 'Crie funis automatizados de ponta a ponta' },
+    { icon: CreditCard, label: 'Checkout Integrado', description: 'Pagamento PIX e cartão direto no bot' },
+    { icon: Package, label: 'Entrega Automática', description: 'Libere o produto após pagamento confirmado' },
   ],
-  autopay: [
-    { icon: CreditCard, label: 'Pagamentos', description: 'Automação de vendas' },
-    { icon: Users, label: 'Conversões', description: 'Tracking de clientes' },
-    { icon: BarChart3, label: 'Relatórios', description: 'Análise de vendas' },
+  'checkout-pro': [
+    { icon: CreditCard, label: 'Páginas de Venda', description: 'Checkout externo estilo Kiwify/Cakto' },
+    { icon: QrCode, label: 'PIX QR Code', description: 'Geração automática de QR Code' },
+    { icon: BarChart3, label: 'Conversão', description: 'Métricas de conversão em tempo real' },
   ],
-  sessions: [
-    { icon: Key, label: 'Multi-sessão', description: 'Gerencie várias contas' },
-    { icon: Database, label: 'Backup', description: 'Salve sessões em .session' },
-    { icon: Shield, label: 'Segurança', description: 'Criptografia de dados' },
+  'area-vip': [
+    { icon: Crown, label: 'Controle de Acesso', description: 'Gerencie quem entra e sai do grupo VIP' },
+    { icon: Users, label: 'Membros Pagantes', description: 'Lista automática de pagantes ativos' },
+    { icon: Clock, label: 'Expiração', description: 'Remoção automática ao vencer o acesso' },
   ],
-  addmembers: [
-    { icon: UserPlus, label: 'Importação', description: 'Adicione membros em massa' },
-    { icon: Users, label: 'Filtros', description: 'Selecione usuários ativos' },
-    { icon: BarChart3, label: 'Logs', description: 'Acompanhe adições' },
+  'disparo': [
+    { icon: Send, label: 'Broadcast', description: 'Envie para milhares de contatos' },
+    { icon: Shield, label: 'Anti-ban', description: 'Delays inteligentes para evitar bloqueio' },
+    { icon: BarChart3, label: 'Relatório', description: 'Entregues, lidos e erros em tempo real' },
   ],
-  tclone: [
-    { icon: Copy, label: 'Clonagem', description: 'Clone grupos/canais' },
-    { icon: Database, label: 'Backup', description: 'Preserve estrutura' },
-    { icon: Users, label: 'Membros', description: 'Transfira usuários' },
+  'leads': [
+    { icon: UserPlus, label: 'Captura Automática', description: 'Colete nome, telefone e e-mail' },
+    { icon: Download, label: 'Exportação', description: 'Exporte em CSV/JSON/Excel' },
+    { icon: Tag, label: 'Segmentação', description: 'Tags automáticas por origem' },
   ],
-  views: [
-    { icon: Eye, label: 'Rastreamento', description: 'Monitore visualizações' },
-    { icon: BarChart3, label: 'Analytics', description: 'Relatórios detalhados' },
-    { icon: Zap, label: 'Real-time', description: 'Dados ao vivo' },
+  'funis': [
+    { icon: Workflow, label: 'Editor Visual', description: 'Drag-and-drop estilo ManyChat' },
+    { icon: Zap, label: 'Condições', description: 'If/else, delays, webhooks' },
+    { icon: MessageSquare, label: 'Multi-mídia', description: 'Texto, imagem, vídeo e botões' },
   ],
-  superbot: [
-    { icon: Zap, label: 'IA Avançada', description: 'Respostas inteligentes' },
-    { icon: MessageSquare, label: 'Chat 24/7', description: 'Atendimento contínuo' },
-    { icon: BarChart3, label: 'Comandos', description: 'Múltiplos comandos' },
+  'atendimento': [
+    { icon: Bot, label: 'IA Avançada', description: 'Respostas inteligentes com IA' },
+    { icon: MessageSquare, label: 'Chat 24/7', description: 'Atendimento contínuo automatizado' },
+    { icon: Users, label: 'Transferência', description: 'Escale para humano quando necessário' },
   ],
-  masssender: [
-    { icon: Send, label: 'Envio Massa', description: 'Centenas de mensagens' },
-    { icon: Database, label: 'Listas', description: 'CSV/JSON suportado' },
-    { icon: Shield, label: 'Anti-ban', description: 'Delays automáticos' },
+  'entrega': [
+    { icon: Package, label: 'Arquivos', description: 'PDFs, vídeos, links e cursos' },
+    { icon: Link, label: 'Links Seguros', description: 'Links com expiração e limite de acesso' },
+    { icon: Shield, label: 'Anti-pirataria', description: 'Proteção contra compartilhamento' },
   ],
-  userscraper: [
-    { icon: Users, label: 'Extração', description: 'IDs e usernames' },
-    { icon: Download, label: 'Exportação', description: 'CSV/JSON' },
-    { icon: BarChart3, label: 'Filtros', description: 'Online/offline' },
+  'agendador': [
+    { icon: Calendar, label: 'Agendamento', description: 'Agende por data, hora e recorrência' },
+    { icon: Clock, label: 'Fuso Horário', description: 'Respeite o fuso do destinatário' },
+    { icon: FileText, label: 'Templates', description: 'Salve mensagens como templates' },
   ],
-  pollbot: [
-    { icon: BarChart3, label: 'Enquetes', description: 'Crie votações' },
-    { icon: Users, label: 'Participação', description: 'Anônima ou pública' },
-    { icon: MessageSquare, label: 'Resultados', description: 'Tempo real' },
+  'pix': [
+    { icon: QrCode, label: 'QR Code PIX', description: 'Gere cobranças instantâneas no chat' },
+    { icon: DollarSign, label: 'Confirmação', description: 'Detecte pagamento em tempo real' },
+    { icon: CreditCard, label: 'Copia e Cola', description: 'Código PIX pronto para copiar' },
   ],
-  messagebackup: [
-    { icon: Database, label: 'Backup', description: 'Extraia mensagens' },
-    { icon: Download, label: 'Mídias', description: 'Salve arquivos' },
-    { icon: BarChart3, label: 'Filtros', description: 'Por data/usuário' },
+  'crm': [
+    { icon: Tag, label: 'Tags', description: 'Etiquete contatos por comportamento' },
+    { icon: Users, label: 'Listas', description: 'Organize contatos em listas' },
+    { icon: FileText, label: 'Histórico', description: 'Histórico completo de interações' },
   ],
-  inactivecleaner: [
-    { icon: UserMinus, label: 'Detecção', description: 'Identifique inativos' },
-    { icon: Shield, label: 'Remoção', description: 'Limpeza automática' },
-    { icon: BarChart3, label: 'Relatórios', description: 'Logs de ações' },
+  'relatorios': [
+    { icon: BarChart3, label: 'Dashboard', description: 'Métricas visuais em tempo real' },
+    { icon: TrendingUp, label: 'Crescimento', description: 'Análise de crescimento diário' },
+    { icon: Download, label: 'Exportar', description: 'Relatórios em PDF e Excel' },
   ],
-  mediaextractor: [
-    { icon: Download, label: 'Extração', description: 'Links e mídias' },
-    { icon: Database, label: 'Organização', description: 'Por pastas/datas' },
-    { icon: BarChart3, label: 'Relatórios', description: 'Lista completa' },
+  'afiliados': [
+    { icon: Share2, label: 'Links de Afiliado', description: 'Gere links únicos por afiliado' },
+    { icon: DollarSign, label: 'Comissões', description: 'Comissões configuráveis por produto' },
+    { icon: BarChart3, label: 'Rastreamento', description: 'Cliques, vendas e conversão' },
   ],
-  accountgen: [
-    { icon: UserCog, label: 'Criação', description: 'Contas automáticas' },
-    { icon: Key, label: 'Sessões', description: 'Arquivos .session' },
-    { icon: Shield, label: 'Validação', description: 'SMS automático' },
+  'upsell': [
+    { icon: TrendingUp, label: 'Order Bump', description: 'Oferta extra no checkout' },
+    { icon: ShoppingCart, label: 'Upsell', description: 'Oferta após compra confirmada' },
+    { icon: RefreshCcw, label: 'Downsell', description: 'Oferta alternativa se recusar' },
   ],
-  autoreact: [
-    { icon: Smile, label: 'Reações Auto', description: 'Emojis personalizados' },
-    { icon: MessageSquare, label: 'Filtros', description: 'Por autor/palavra' },
-    { icon: BarChart3, label: 'Logs', description: 'Reações aplicadas' },
+  'recuperacao': [
+    { icon: RefreshCcw, label: 'Carrinho Abandonado', description: 'Lembretes automáticos' },
+    { icon: Mail, label: 'Sequência', description: 'Até 5 mensagens de recuperação' },
+    { icon: DollarSign, label: 'Desconto', description: 'Cupom automático de incentivo' },
   ],
-  security: [
-    { icon: Shield, label: 'Anti-link', description: 'Bloqueie links' },
-    { icon: UserMinus, label: 'Anti-spam', description: 'Remova spam' },
-    { icon: BarChart3, label: 'Warns', description: 'Sistema de avisos' },
+  'notificacoes': [
+    { icon: Bell, label: 'Alertas', description: 'Notifique por venda, lead ou erro' },
+    { icon: Zap, label: 'Triggers', description: 'Dispare por evento do sistema' },
+    { icon: MessageSquare, label: 'Multi-canal', description: 'Telegram, e-mail e webhook' },
   ],
-  massreact: [
-    { icon: Heart, label: 'Reações Massa', description: 'Centenas de reações' },
-    { icon: Users, label: 'Multi-conta', description: 'Várias sessões' },
-    { icon: Shield, label: 'Anti-ban', description: 'Delays seguros' },
+  'extrator': [
+    { icon: Download, label: 'Exportar Contatos', description: 'IDs, usernames e telefones' },
+    { icon: Users, label: 'Grupos', description: 'Extraia membros de qualquer grupo' },
+    { icon: FileText, label: 'Planilhas', description: 'Exporte em CSV/Excel' },
   ],
 };
 
@@ -119,21 +128,21 @@ export function getToolFeatures(toolType: ToolType): ToolFeature[] {
 }
 
 export const toolColors: Record<ToolType, string> = {
-  autopost: 'from-blue-500/20 to-cyan-500/20',
-  autopay: 'from-green-500/20 to-emerald-500/20',
-  sessions: 'from-purple-500/20 to-pink-500/20',
-  addmembers: 'from-orange-500/20 to-amber-500/20',
-  tclone: 'from-indigo-500/20 to-violet-500/20',
-  views: 'from-yellow-500/20 to-orange-500/20',
-  superbot: 'from-red-500/20 to-rose-500/20',
-  masssender: 'from-teal-500/20 to-cyan-500/20',
-  userscraper: 'from-lime-500/20 to-green-500/20',
-  pollbot: 'from-fuchsia-500/20 to-pink-500/20',
-  messagebackup: 'from-sky-500/20 to-blue-500/20',
-  inactivecleaner: 'from-slate-500/20 to-gray-500/20',
-  mediaextractor: 'from-violet-500/20 to-purple-500/20',
-  accountgen: 'from-amber-500/20 to-yellow-500/20',
-  autoreact: 'from-pink-500/20 to-rose-500/20',
-  security: 'from-red-600/20 to-orange-600/20',
-  massreact: 'from-rose-500/20 to-pink-500/20',
+  'vendas-auto': 'from-green-500/20 to-emerald-500/20',
+  'checkout-pro': 'from-blue-500/20 to-cyan-500/20',
+  'area-vip': 'from-amber-500/20 to-yellow-500/20',
+  'disparo': 'from-teal-500/20 to-cyan-500/20',
+  'leads': 'from-orange-500/20 to-amber-500/20',
+  'funis': 'from-indigo-500/20 to-violet-500/20',
+  'atendimento': 'from-purple-500/20 to-pink-500/20',
+  'entrega': 'from-sky-500/20 to-blue-500/20',
+  'agendador': 'from-yellow-500/20 to-orange-500/20',
+  'pix': 'from-lime-500/20 to-green-500/20',
+  'crm': 'from-fuchsia-500/20 to-pink-500/20',
+  'relatorios': 'from-slate-500/20 to-gray-500/20',
+  'afiliados': 'from-violet-500/20 to-purple-500/20',
+  'upsell': 'from-rose-500/20 to-pink-500/20',
+  'recuperacao': 'from-red-500/20 to-rose-500/20',
+  'notificacoes': 'from-pink-500/20 to-rose-500/20',
+  'extrator': 'from-emerald-500/20 to-teal-500/20',
 };

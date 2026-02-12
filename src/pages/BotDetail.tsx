@@ -16,23 +16,23 @@ import PlanGuard from '@/components/PlanGuard';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { mockBots, mockChartData, ToolType } from '@/mocks/mockData';
 import { getToolFeatures } from '@/config/toolFeatures';
-import SuperBotTab from '@/components/SuperBotTab';
-import AutoPayTab from '@/components/AutoPayTab';
-import AutoPostTab from '@/components/AutoPostTab';
-import CreateSessionsTab from '@/components/CreateSessionsTab';
-import AddMembersTab from '@/components/AddMembersTab';
-import TCloneTab from '@/components/TCloneTab';
-import ViewsTrackingTab from '@/components/ViewsTrackingTab';
-import MassSenderTab from '@/components/MassSenderTab';
-import UserScraperTab from '@/components/UserScraperTab';
-import PollBotTab from '@/components/PollBotTab';
-import MessageBackupTab from '@/components/MessageBackupTab';
-import InactiveCleanerTab from '@/components/InactiveCleanerTab';
-import MediaExtractorTab from '@/components/MediaExtractorTab';
-import AccountGeneratorTab from '@/components/AccountGeneratorTab';
-import AutoReactTab from '@/components/AutoReactTab';
-import SecurityBotTab from '@/components/SecurityBotTab';
-import MassReactTab from '@/components/MassReactTab';
+import VendasAutoTab from '@/components/tabs/VendasAutoTab';
+import CheckoutProTab from '@/components/tabs/CheckoutProTab';
+import AreaVipTab from '@/components/tabs/AreaVipTab';
+import DisparoTab from '@/components/tabs/DisparoTab';
+import LeadsTab from '@/components/tabs/LeadsTab';
+import FunisTab from '@/components/tabs/FunisTab';
+import AtendimentoTab from '@/components/tabs/AtendimentoTab';
+import EntregaTab from '@/components/tabs/EntregaTab';
+import AgendadorTab from '@/components/tabs/AgendadorTab';
+import PixTab from '@/components/tabs/PixTab';
+import CrmTab from '@/components/tabs/CrmTab';
+import RelatoriosTab from '@/components/tabs/RelatoriosTab';
+import AfiliadosTab from '@/components/tabs/AfiliadosTab';
+import UpsellTab from '@/components/tabs/UpsellTab';
+import RecuperacaoTab from '@/components/tabs/RecuperacaoTab';
+import NotificacoesTab from '@/components/tabs/NotificacoesTab';
+import ExtratorTab from '@/components/tabs/ExtratorTab';
 
 export default function BotDetail() {
   const { id, toolType } = useParams();
@@ -93,40 +93,40 @@ export default function BotDetail() {
   // Renderizar componente específico da ferramenta
   const renderToolComponent = () => {
     switch (toolType as ToolType) {
-      case 'superbot':
-        return <SuperBotTab />;
-      case 'autopay':
-        return <AutoPayTab />;
-      case 'autopost':
-        return <AutoPostTab />;
-      case 'sessions':
-        return <CreateSessionsTab />;
-      case 'addmembers':
-        return <AddMembersTab />;
-      case 'tclone':
-        return <TCloneTab />;
-      case 'views':
-        return <ViewsTrackingTab />;
-      case 'masssender':
-        return <MassSenderTab />;
-      case 'userscraper':
-        return <UserScraperTab />;
-      case 'pollbot':
-        return <PollBotTab />;
-      case 'messagebackup':
-        return <MessageBackupTab />;
-      case 'inactivecleaner':
-        return <InactiveCleanerTab />;
-      case 'mediaextractor':
-        return <MediaExtractorTab />;
-      case 'accountgen':
-        return <AccountGeneratorTab />;
-      case 'autoreact':
-        return <AutoReactTab />;
-      case 'security':
-        return <SecurityBotTab />;
-      case 'massreact':
-        return <MassReactTab />;
+      case 'vendas-auto':
+        return <VendasAutoTab />;
+      case 'checkout-pro':
+        return <CheckoutProTab />;
+      case 'area-vip':
+        return <AreaVipTab />;
+      case 'disparo':
+        return <DisparoTab />;
+      case 'leads':
+        return <LeadsTab />;
+      case 'funis':
+        return <FunisTab />;
+      case 'atendimento':
+        return <AtendimentoTab />;
+      case 'entrega':
+        return <EntregaTab />;
+      case 'agendador':
+        return <AgendadorTab />;
+      case 'pix':
+        return <PixTab />;
+      case 'crm':
+        return <CrmTab />;
+      case 'relatorios':
+        return <RelatoriosTab />;
+      case 'afiliados':
+        return <AfiliadosTab />;
+      case 'upsell':
+        return <UpsellTab />;
+      case 'recuperacao':
+        return <RecuperacaoTab />;
+      case 'notificacoes':
+        return <NotificacoesTab />;
+      case 'extrator':
+        return <ExtratorTab />;
       default:
         return <div className="text-center text-muted-foreground py-12">Ferramenta não encontrada</div>;
     }
