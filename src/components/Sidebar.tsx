@@ -1,4 +1,4 @@
-import { Home, Bot, BarChart3, Workflow, MessageSquare, Settings, HelpCircle, X, Crown, TrendingUp } from 'lucide-react';
+import { Home, Bot, BarChart3, Workflow, MessageSquare, Settings, HelpCircle, X, Crown, TrendingUp, Package, Wallet, Ticket } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,9 @@ const menuItems = [
   { icon: Bot, label: 'Meus Bots', path: '/my-bots' },
   { icon: Workflow, label: 'Automações', path: '/automations' },
   { icon: MessageSquare, label: 'Chat', path: '/messages' },
+  { icon: Package, label: 'Produtos', path: '/products' },
+  { icon: Wallet, label: 'Carteira', path: '/wallet' },
+  { icon: Ticket, label: 'Cupons', path: '/coupons' },
   { icon: TrendingUp, label: 'Analytics', path: '/analytics' },
   { icon: BarChart3, label: 'Estatísticas', path: '/stats' },
   { icon: Settings, label: 'Configurações', path: '/settings' },
