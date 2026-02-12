@@ -105,6 +105,14 @@ export default function Automations() {
       button: 'Botão',
       payment: 'Pagamento',
       webhook: 'Webhook',
+      image: 'Imagem',
+      audio: 'Áudio',
+      video: 'Vídeo',
+      tag: 'Tag',
+      variable: 'Variável',
+      list: 'Lista',
+      api: 'API',
+      sequence: 'Sequência',
     };
     const newNode = {
       id: `node-${Date.now()}`,

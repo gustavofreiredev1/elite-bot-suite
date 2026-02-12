@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap, Home, Plus, ArrowRight } from 'lucide-react';
+import { Bot, MessageSquare, Repeat, Activity, TrendingUp, Zap, Home, Plus, ArrowRight, DollarSign, ShoppingCart } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,7 @@ const item = {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
-  const [stats, setStats] = useState({ totalBots: 0, activeBots: 0, totalMessages: 0, totalFlows: 0 });
+  const [stats, setStats] = useState({ totalBots: 0, activeBots: 0, totalMessages: 0, totalFlows: 0, totalOrders: 0, totalRevenue: 0 });
   const [hasBots, setHasBots] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -48,11 +48,20 @@ export default function Dashboard() {
           .from('bot_flows')
           .select('*', { count: 'exact', head: true });
 
+        // Get orders
+        const { data: ordersData } = await supabase
+          .from('orders')
+          .select('amount, status');
+        const paidOrders = (ordersData || []).filter((o: any) => o.status === 'paid');
+        const totalRevenue = paidOrders.reduce((sum: number, o: any) => sum + (o.amount || 0), 0);
+
         setStats({
           totalBots,
           activeBots,
           totalMessages: msgCount || 0,
           totalFlows: flowCount || 0,
+          totalOrders: ordersData?.length || 0,
+          totalRevenue,
         });
       } catch {
         // Silently fail
@@ -63,9 +72,11 @@ export default function Dashboard() {
 
   const statCards = [
     { label: 'Total de Bots', value: stats.totalBots, icon: Bot, color: 'text-primary' },
-    { label: 'Bots Ativos', value: stats.activeBots, icon: Activity, color: 'text-success' },
+    { label: 'Bots Ativos', value: stats.activeBots, icon: Activity, color: 'text-emerald-500' },
     { label: 'Mensagens', value: stats.totalMessages, icon: MessageSquare, color: 'text-secondary' },
     { label: 'Automações', value: stats.totalFlows, icon: Repeat, color: 'text-accent' },
+    { label: 'Pedidos', value: stats.totalOrders, icon: ShoppingCart, color: 'text-amber-500' },
+    { label: 'Receita (R$)', value: stats.totalRevenue, icon: DollarSign, color: 'text-emerald-500' },
   ];
 
   return (
@@ -122,7 +133,7 @@ export default function Dashboard() {
         )}
 
         {/* Stats Cards */}
-        <motion.div variants={item} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <motion.div variants={item} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {statCards.map((stat, index) => (
             <motion.div key={index} whileHover={{ scale: 1.02, y: -4 }} transition={{ type: 'spring', stiffness: 300 }}>
               <Card className="card-glow relative overflow-hidden group">
@@ -155,6 +166,14 @@ export default function Dashboard() {
                 <Button onClick={() => navigate('/automations')} variant="outline" className="hover-glow">
                   <Zap className="mr-2 h-4 w-4" />
                   Criar Fluxo
+                </Button>
+                <Button onClick={() => navigate('/products')} variant="outline" className="hover-glow">
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Produtos
+                </Button>
+                <Button onClick={() => navigate('/wallet')} variant="outline" className="hover-glow">
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  Carteira
                 </Button>
                 <Button onClick={() => navigate('/messages')} variant="outline" className="hover-glow">
                   <MessageSquare className="mr-2 h-4 w-4" />

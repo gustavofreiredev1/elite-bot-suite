@@ -19,6 +19,10 @@ import Settings from "./pages/Settings";
 import Support from "./pages/Support";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import Products from "./pages/Products";
+import Wallet from "./pages/Wallet";
+import Checkout from "./pages/Checkout";
+import Coupons from "./pages/Coupons";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
@@ -47,6 +51,10 @@ function AppRoutes() {
       <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="/support" element={<ProtectedRoute><Support /></ProtectedRoute>} />
+      <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+      <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
+      <Route path="/coupons" element={<ProtectedRoute><Coupons /></ProtectedRoute>} />
+      <Route path="/checkout/:slug" element={<Checkout />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
