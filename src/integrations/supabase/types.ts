@@ -138,6 +138,56 @@ export type Database = {
           },
         ]
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          current_uses: number
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          product_id: string | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          current_uses?: number
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          product_id?: string | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          current_uses?: number
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          product_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           bot_id: string
@@ -189,6 +239,86 @@ export type Database = {
           },
         ]
       }
+      orders: {
+        Row: {
+          amount: number
+          buyer_email: string | null
+          buyer_name: string | null
+          buyer_phone: string | null
+          buyer_telegram_id: number | null
+          coupon_code: string | null
+          created_at: string
+          delivered_at: string | null
+          external_payment_id: string | null
+          id: string
+          metadata: Json | null
+          net_amount: number
+          paid_at: string | null
+          payment_method: string
+          pix_code: string | null
+          pix_qr_code: string | null
+          platform_fee: number
+          product_id: string
+          seller_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          buyer_email?: string | null
+          buyer_name?: string | null
+          buyer_phone?: string | null
+          buyer_telegram_id?: number | null
+          coupon_code?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          external_payment_id?: string | null
+          id?: string
+          metadata?: Json | null
+          net_amount?: number
+          paid_at?: string | null
+          payment_method?: string
+          pix_code?: string | null
+          pix_qr_code?: string | null
+          platform_fee?: number
+          product_id: string
+          seller_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          buyer_email?: string | null
+          buyer_name?: string | null
+          buyer_phone?: string | null
+          buyer_telegram_id?: number | null
+          coupon_code?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          external_payment_id?: string | null
+          id?: string
+          metadata?: Json | null
+          net_amount?: number
+          paid_at?: string | null
+          payment_method?: string
+          pix_code?: string | null
+          pix_qr_code?: string | null
+          platform_fee?: number
+          product_id?: string
+          seller_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plans: {
         Row: {
           created_at: string
@@ -230,6 +360,77 @@ export type Database = {
           slug?: string
         }
         Relationships: []
+      }
+      products: {
+        Row: {
+          bot_id: string | null
+          checkout_config: Json | null
+          created_at: string
+          currency: string
+          delivery_content: string | null
+          delivery_type: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          order_bump_product_id: string | null
+          price: number
+          product_type: string
+          slug: string
+          updated_at: string
+          upsell_product_id: string | null
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          checkout_config?: Json | null
+          created_at?: string
+          currency?: string
+          delivery_content?: string | null
+          delivery_type?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          order_bump_product_id?: string | null
+          price?: number
+          product_type?: string
+          slug: string
+          updated_at?: string
+          upsell_product_id?: string | null
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          checkout_config?: Json | null
+          created_at?: string
+          currency?: string
+          delivery_content?: string | null
+          delivery_type?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          order_bump_product_id?: string | null
+          price?: number
+          product_type?: string
+          slug?: string
+          updated_at?: string
+          upsell_product_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -377,6 +578,72 @@ export type Database = {
         Update: {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          pending_balance: number
+          total_earned: number
+          total_withdrawn: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          pending_balance?: number
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          pending_balance?: number
+          total_earned?: number
+          total_withdrawn?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      withdrawals: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          pix_key: string
+          pix_key_type: string
+          processed_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          pix_key: string
+          pix_key_type?: string
+          processed_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          pix_key?: string
+          pix_key_type?: string
+          processed_at?: string | null
+          status?: string
           user_id?: string
         }
         Relationships: []
