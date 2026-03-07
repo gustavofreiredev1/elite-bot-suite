@@ -1,73 +1,53 @@
-import { BarChart3, TrendingUp, Download, DollarSign } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BarChart3, Loader2, DollarSign, Users, ShoppingCart, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { toast } from 'sonner';
-
-const revenueData = [
-  { date: '01/03', revenue: 450, orders: 5 },
-  { date: '02/03', revenue: 890, orders: 9 },
-  { date: '03/03', revenue: 320, orders: 3 },
-  { date: '04/03', revenue: 1250, orders: 12 },
-  { date: '05/03', revenue: 780, orders: 8 },
-  { date: '06/03', revenue: 1100, orders: 11 },
-  { date: '07/03', revenue: 1450, orders: 15 },
-];
-
-const channelData = [
-  { name: 'Bot Vendas', value: 4500 },
-  { name: 'Checkout', value: 3200 },
-  { name: 'PIX Chat', value: 1800 },
-  { name: 'Afiliados', value: 900 },
-];
+import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function RelatoriosTab() {
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ totalOrders: 0, totalRevenue: 0, totalLeads: 0, totalMembers: 0, paidOrders: 0, pendingOrders: 0 });
+  const [chartData, setChartData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const [ordersRes, leadsRes, membersRes] = await Promise.all([
+          supabase.from('orders').select('amount, status, created_at').eq('seller_id', user.id),
+          supabase.from('leads').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+          supabase.from('vip_members').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+        ]);
+        const orders = ordersRes.data || [];
+        const paid = orders.filter(o => o.status === 'paid');
+        const revenue = paid.reduce((s, o) => s + (o.amount || 0), 0);
+        const dateMap: Record<string, { date: string; vendas: number }> = {};
+        orders.forEach(o => { const d = new Date(o.created_at).toLocaleDateString('pt-BR'); if (!dateMap[d]) dateMap[d] = { date: d, vendas: 0 }; dateMap[d].vendas++; });
+        setStats({ totalOrders: orders.length, totalRevenue: revenue, totalLeads: leadsRes.count || 0, totalMembers: membersRes.count || 0, paidOrders: paid.length, pendingOrders: orders.filter(o => o.status === 'pending').length });
+        setChartData(Object.values(dateMap).slice(-14));
+      } catch {} finally { setLoading(false); }
+    };
+    load();
+  }, []);
+
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-2xl font-bold">Relatórios Pro</h3>
-          <p className="text-muted-foreground mt-1">Analytics completos do seu negócio</p>
-        </div>
-        <Button variant="outline" onClick={() => toast.success('Relatório exportado!')}><Download className="mr-2 h-4 w-4" />Exportar PDF</Button>
+      <div><h3 className="text-2xl font-bold">Relatórios Pro</h3><p className="text-muted-foreground mt-1">Analytics completos da operação</p></div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card><CardContent className="pt-6 flex items-center gap-4"><DollarSign className="h-8 w-8 text-emerald-500" /><div><div className="text-2xl font-bold">R$ {stats.totalRevenue.toFixed(2)}</div><p className="text-sm text-muted-foreground">Receita Total</p></div></CardContent></Card>
+        <Card><CardContent className="pt-6 flex items-center gap-4"><ShoppingCart className="h-8 w-8 text-primary" /><div><div className="text-2xl font-bold">{stats.totalOrders}</div><p className="text-sm text-muted-foreground">Pedidos</p></div></CardContent></Card>
+        <Card><CardContent className="pt-6 flex items-center gap-4"><Users className="h-8 w-8 text-amber-500" /><div><div className="text-2xl font-bold">{stats.totalLeads}</div><p className="text-sm text-muted-foreground">Leads</p></div></CardContent></Card>
+        <Card><CardContent className="pt-6 flex items-center gap-4"><TrendingUp className="h-8 w-8 text-secondary" /><div><div className="text-2xl font-bold">{stats.totalMembers}</div><p className="text-sm text-muted-foreground">Membros VIP</p></div></CardContent></Card>
       </div>
-
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card><CardContent className="pt-6"><div className="text-2xl font-bold text-emerald-500">R$ 10.400</div><p className="text-sm text-muted-foreground">Receita Total</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">63</div><p className="text-sm text-muted-foreground">Total de Vendas</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">R$ 165</div><p className="text-sm text-muted-foreground">Ticket Médio</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><div className="text-2xl font-bold text-primary">+23%</div><p className="text-sm text-muted-foreground">Crescimento</p></CardContent></Card>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card><CardContent className="pt-6"><div className="flex justify-between mb-2"><span className="text-sm text-muted-foreground">Pagos</span><Badge>{stats.paidOrders}</Badge></div><div className="flex justify-between"><span className="text-sm text-muted-foreground">Pendentes</span><Badge variant="secondary">{stats.pendingOrders}</Badge></div></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="flex justify-between mb-2"><span className="text-sm text-muted-foreground">Conversão</span><span className="font-bold">{stats.totalOrders > 0 ? ((stats.paidOrders / stats.totalOrders) * 100).toFixed(1) : 0}%</span></div><div className="flex justify-between"><span className="text-sm text-muted-foreground">Ticket Médio</span><span className="font-bold">R$ {stats.paidOrders > 0 ? (stats.totalRevenue / stats.paidOrders).toFixed(2) : '0.00'}</span></div></CardContent></Card>
       </div>
-
-      <Card>
-        <CardHeader><CardTitle>Receita por Dia</CardTitle></CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={revenueData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" />
-              <YAxis stroke="hsl(var(--muted-foreground))" />
-              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
-              <Line type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader><CardTitle>Receita por Canal</CardTitle></CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={channelData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
-              <YAxis stroke="hsl(var(--muted-foreground))" />
-              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
-              <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      {chartData.length > 0 && <Card><CardHeader><CardTitle className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-primary" />Vendas por Dia</CardTitle></CardHeader><CardContent><ResponsiveContainer width="100%" height={300}><BarChart data={chartData}><CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" /><XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} /><YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} /><Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} /><Bar dataKey="vendas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} /></BarChart></ResponsiveContainer></CardContent></Card>}
     </div>
   );
 }
