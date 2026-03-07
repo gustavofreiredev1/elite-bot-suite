@@ -1,102 +1,37 @@
-import { useState } from 'react';
-import { CreditCard, Plus, Copy, ExternalLink, BarChart3 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { CreditCard, Loader2, Copy, ExternalLink, Plus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
-
-interface CheckoutPage {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  views: number;
-  conversions: number;
-  isActive: boolean;
-}
+import { getProducts } from '@/lib/products';
+import { useNavigate } from 'react-router-dom';
 
 export default function CheckoutProTab() {
-  const [pages, setPages] = useState<CheckoutPage[]>([
-    { id: '1', name: 'Checkout Premium', slug: 'premium', price: 197, views: 1250, conversions: 89, isActive: true },
-  ]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [form, setForm] = useState({ name: '', slug: '', price: '' });
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const handleCreate = () => {
-    if (!form.name || !form.slug || !form.price) return;
-    setPages(prev => [...prev, { id: Date.now().toString(), name: form.name, slug: form.slug, price: parseFloat(form.price), views: 0, conversions: 0, isActive: true }]);
-    setForm({ name: '', slug: '', price: '' });
-    setIsOpen(false);
-    toast.success('Página de checkout criada!');
-  };
+  useEffect(() => { getProducts().then(setProducts).catch(() => {}).finally(() => setLoading(false)); }, []);
+  const copyLink = (slug: string) => { navigator.clipboard.writeText(`${window.location.origin}/checkout/${slug}`); toast.success('Link copiado!'); };
+
+  if (loading) return <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-2xl font-bold">Checkout Pro</h3>
-          <p className="text-muted-foreground mt-1">Páginas de venda de alta conversão estilo Kiwify/Cakto</p>
-        </div>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild><Button><Plus className="mr-2 h-4 w-4" />Nova Página</Button></DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Criar Página de Checkout</DialogTitle></DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2"><Label>Nome</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Checkout Premium" /></div>
-              <div className="space-y-2"><Label>Slug (URL)</Label><Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder="meu-produto" /></div>
-              <div className="space-y-2"><Label>Preço (R$)</Label><Input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} placeholder="197.00" /></div>
-              <Button onClick={handleCreate} className="w-full">Criar Checkout</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <div><h3 className="text-2xl font-bold">Checkout Pro</h3><p className="text-muted-foreground mt-1">Páginas de venda estilo Kiwify</p></div>
+        <Button onClick={() => navigate('/products')}><Plus className="mr-2 h-4 w-4" />Novo Produto</Button>
       </div>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{pages.reduce((a, p) => a + p.views, 0)}</div><p className="text-sm text-muted-foreground">Visualizações</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{pages.reduce((a, p) => a + p.conversions, 0)}</div><p className="text-sm text-muted-foreground">Conversões</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{pages.length > 0 ? ((pages.reduce((a, p) => a + p.conversions, 0) / Math.max(pages.reduce((a, p) => a + p.views, 0), 1)) * 100).toFixed(1) : 0}%</div><p className="text-sm text-muted-foreground">Taxa de Conversão</p></CardContent></Card>
-      </div>
-
-      <Card>
-        <CardHeader><CardTitle>Páginas de Checkout</CardTitle></CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>URL</TableHead>
-                <TableHead>Preço</TableHead>
-                <TableHead>Views</TableHead>
-                <TableHead>Conversões</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {pages.map(p => (
-                <TableRow key={p.id}>
-                  <TableCell className="font-medium">{p.name}</TableCell>
-                  <TableCell className="font-mono text-xs">/checkout/{p.slug}</TableCell>
-                  <TableCell>R$ {p.price.toFixed(2)}</TableCell>
-                  <TableCell>{p.views}</TableCell>
-                  <TableCell>{p.conversions}</TableCell>
-                  <TableCell><Badge variant={p.isActive ? 'default' : 'secondary'}>{p.isActive ? 'Ativo' : 'Inativo'}</Badge></TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/checkout/${p.slug}`); toast.success('Link copiado!'); }}><Copy className="h-3 w-3" /></Button>
-                      <Button size="sm" variant="outline" onClick={() => window.open(`/checkout/${p.slug}`, '_blank')}><ExternalLink className="h-3 w-3" /></Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      {products.length === 0 ? (
+        <Card><CardContent className="flex flex-col items-center py-16 space-y-4"><CreditCard className="h-16 w-16 text-muted-foreground/30" /><p className="text-muted-foreground">Crie um produto para gerar seu checkout.</p><Button onClick={() => navigate('/products')}>Criar Produto</Button></CardContent></Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{products.map(p => (
+          <Card key={p.id} className="card-glow"><CardHeader><div className="flex items-start justify-between"><CardTitle className="text-lg">{p.name}</CardTitle><Badge variant={p.is_active ? 'default' : 'secondary'}>{p.is_active ? 'Ativo' : 'Inativo'}</Badge></div><p className="text-2xl font-bold text-primary mt-2">R$ {p.price.toFixed(2)}</p></CardHeader>
+            <CardContent><p className="text-sm text-muted-foreground mb-4">{p.description || 'Sem descrição'}</p><div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => copyLink(p.slug)}><Copy className="h-3 w-3 mr-1" />Link</Button><Button variant="outline" size="sm" onClick={() => window.open(`/checkout/${p.slug}`, '_blank')}><ExternalLink className="h-3 w-3 mr-1" />Abrir</Button></div><p className="text-xs text-muted-foreground mt-3 font-mono">{window.location.origin}/checkout/{p.slug}</p></CardContent>
+          </Card>
+        ))}</div>
+      )}
     </div>
   );
 }
