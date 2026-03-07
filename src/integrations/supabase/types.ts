@@ -14,6 +14,103 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliates: {
+        Row: {
+          affiliate_code: string
+          affiliate_email: string | null
+          affiliate_name: string
+          commission_percent: number
+          created_at: string
+          id: string
+          is_active: boolean | null
+          product_id: string | null
+          total_earned: number | null
+          total_sales: number | null
+          user_id: string
+        }
+        Insert: {
+          affiliate_code: string
+          affiliate_email?: string | null
+          affiliate_name: string
+          commission_percent?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          product_id?: string | null
+          total_earned?: number | null
+          total_sales?: number | null
+          user_id: string
+        }
+        Update: {
+          affiliate_code?: string
+          affiliate_email?: string | null
+          affiliate_name?: string
+          commission_percent?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          product_id?: string | null
+          total_earned?: number | null
+          total_sales?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliates_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auto_responses: {
+        Row: {
+          bot_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          match_type: string | null
+          response_media_url: string | null
+          response_text: string
+          times_triggered: number | null
+          trigger_keyword: string
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          match_type?: string | null
+          response_media_url?: string | null
+          response_text: string
+          times_triggered?: number | null
+          trigger_keyword: string
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          match_type?: string | null
+          response_media_url?: string | null
+          response_text?: string
+          times_triggered?: number | null
+          trigger_keyword?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auto_responses_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bot_flows: {
         Row: {
           bot_id: string
@@ -99,6 +196,74 @@ export type Database = {
           webhook_url?: string | null
         }
         Relationships: []
+      }
+      broadcasts: {
+        Row: {
+          bot_id: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          media_type: string | null
+          media_url: string | null
+          message_content: string
+          name: string
+          scheduled_at: string | null
+          started_at: string | null
+          status: string
+          target_filter: Json | null
+          target_type: string | null
+          total_failed: number | null
+          total_recipients: number | null
+          total_sent: number | null
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          media_type?: string | null
+          media_url?: string | null
+          message_content: string
+          name: string
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          target_filter?: Json | null
+          target_type?: string | null
+          total_failed?: number | null
+          total_recipients?: number | null
+          total_sent?: number | null
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          media_type?: string | null
+          media_url?: string | null
+          message_content?: string
+          name?: string
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          target_filter?: Json | null
+          target_type?: string | null
+          total_failed?: number | null
+          total_recipients?: number | null
+          total_sent?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "broadcasts_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       conversations: {
         Row: {
@@ -188,6 +353,165 @@ export type Database = {
           },
         ]
       }
+      crm_contacts: {
+        Row: {
+          bot_id: string | null
+          created_at: string
+          email: string | null
+          id: string
+          last_interaction_at: string | null
+          name: string | null
+          notes: string | null
+          phone: string | null
+          status: string | null
+          tags: string[] | null
+          telegram_id: number | null
+          telegram_username: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_interaction_at?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+          telegram_id?: number | null
+          telegram_username?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          last_interaction_at?: string | null
+          name?: string | null
+          notes?: string | null
+          phone?: string | null
+          status?: string | null
+          tags?: string[] | null
+          telegram_id?: number | null
+          telegram_username?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crm_contacts_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deliveries: {
+        Row: {
+          content: string
+          created_at: string
+          delivery_type: string
+          id: string
+          is_active: boolean | null
+          name: string
+          product_id: string | null
+          total_delivered: number | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          delivery_type?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          product_id?: string | null
+          total_delivered?: number | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          delivery_type?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          product_id?: string | null
+          total_delivered?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leads: {
+        Row: {
+          bot_id: string | null
+          captured_at: string
+          created_at: string
+          email: string | null
+          id: string
+          metadata: Json | null
+          name: string | null
+          phone: string | null
+          source: string | null
+          tags: string[] | null
+          telegram_id: number | null
+          telegram_username: string | null
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          captured_at?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          phone?: string | null
+          source?: string | null
+          tags?: string[] | null
+          telegram_id?: number | null
+          telegram_username?: string | null
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          captured_at?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          phone?: string | null
+          source?: string | null
+          tags?: string[] | null
+          telegram_id?: number | null
+          telegram_username?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           bot_id: string
@@ -235,6 +559,56 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          bot_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          message: string
+          target_chat_id: number | null
+          template: string | null
+          title: string
+          trigger_event: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          message: string
+          target_chat_id?: number | null
+          template?: string | null
+          title: string
+          trigger_event?: string | null
+          type?: string
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          message?: string
+          target_chat_id?: number | null
+          template?: string | null
+          title?: string
+          trigger_event?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
             referencedColumns: ["id"]
           },
         ]
@@ -476,6 +850,118 @@ export type Database = {
           },
         ]
       }
+      recovery_campaigns: {
+        Row: {
+          bot_id: string | null
+          created_at: string
+          delay_minutes: number
+          id: string
+          is_active: boolean | null
+          max_attempts: number | null
+          message_template: string
+          name: string
+          total_recovered: number | null
+          total_sent: number | null
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          created_at?: string
+          delay_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          max_attempts?: number | null
+          message_template: string
+          name: string
+          total_recovered?: number | null
+          total_sent?: number | null
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          created_at?: string
+          delay_minutes?: number
+          id?: string
+          is_active?: boolean | null
+          max_attempts?: number | null
+          message_template?: string
+          name?: string
+          total_recovered?: number | null
+          total_sent?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recovery_campaigns_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduled_messages: {
+        Row: {
+          bot_id: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          last_sent_at: string | null
+          media_url: string | null
+          message_content: string
+          name: string
+          repeat_interval: string | null
+          schedule_at: string
+          schedule_type: string
+          status: string | null
+          target_chat_id: number | null
+          target_type: string | null
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_sent_at?: string | null
+          media_url?: string | null
+          message_content: string
+          name: string
+          repeat_interval?: string | null
+          schedule_at: string
+          schedule_type?: string
+          status?: string | null
+          target_chat_id?: number | null
+          target_type?: string | null
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_sent_at?: string | null
+          media_url?: string | null
+          message_content?: string
+          name?: string
+          repeat_interval?: string | null
+          schedule_at?: string
+          schedule_type?: string
+          status?: string | null
+          target_chat_id?: number | null
+          target_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_messages_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           created_at: string
@@ -581,6 +1067,63 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vip_members: {
+        Row: {
+          bot_id: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          name: string | null
+          order_id: string | null
+          plan_name: string | null
+          status: string | null
+          telegram_id: number
+          telegram_username: string | null
+          user_id: string
+        }
+        Insert: {
+          bot_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          name?: string | null
+          order_id?: string | null
+          plan_name?: string | null
+          status?: string | null
+          telegram_id: number
+          telegram_username?: string | null
+          user_id: string
+        }
+        Update: {
+          bot_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          name?: string | null
+          order_id?: string | null
+          plan_name?: string | null
+          status?: string | null
+          telegram_id?: number
+          telegram_username?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vip_members_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vip_members_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wallets: {
         Row: {
