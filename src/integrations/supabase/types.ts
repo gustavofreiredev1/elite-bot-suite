@@ -1196,6 +1196,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_delivery_content: { Args: { _order_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1205,6 +1206,14 @@ export type Database = {
       }
       is_bot_owner: { Args: { _bot_id: string }; Returns: boolean }
       is_conversation_owner: { Args: { _conv_id: string }; Returns: boolean }
+      update_wallet_balance: {
+        Args: { _amount: number; _operation: string; _user_id: string }
+        Returns: undefined
+      }
+      validate_coupon: {
+        Args: { _code: string; _product_id?: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"

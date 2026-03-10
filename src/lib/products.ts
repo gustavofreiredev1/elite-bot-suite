@@ -12,8 +12,9 @@ export const getProducts = async () => {
 export const getProductBySlug = async (slug: string) => {
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select('id, user_id, bot_id, name, description, price, currency, product_type, image_url, slug, is_active, checkout_config, order_bump_product_id, upsell_product_id, delivery_type, created_at, updated_at')
     .eq('slug', slug)
+    .eq('is_active', true)
     .single();
   if (error) throw error;
   return data;
@@ -154,6 +155,14 @@ export const requestWithdrawal = async (amount: number, pixKey: string, pixKeyTy
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
+  // Use secure function to deduct balance
+  const { error: walletError } = await supabase.rpc('update_wallet_balance', {
+    _user_id: user.id,
+    _amount: amount,
+    _operation: 'withdraw',
+  });
+  if (walletError) throw walletError;
+
   const { data, error } = await supabase
     .from('withdrawals')
     .insert({
@@ -166,4 +175,13 @@ export const requestWithdrawal = async (amount: number, pixKey: string, pixKeyTy
     .single();
   if (error) throw error;
   return data;
+};
+
+export const validateCoupon = async (code: string, productId?: string) => {
+  const { data, error } = await supabase.rpc('validate_coupon', {
+    _code: code,
+    _product_id: productId || null,
+  });
+  if (error) throw error;
+  return data as { valid: boolean; discount_type?: string; discount_value?: number; error?: string };
 };

@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ShieldCheck, Loader2, QrCode, Copy, CheckCircle2, Package, Lock } from 'lucide-react';
 import { toast } from 'sonner';
-import { getProductBySlug, createOrder } from '@/lib/products';
+import { getProductBySlug, createOrder, validateCoupon } from '@/lib/products';
 import { supabase } from '@/integrations/supabase/client';
 
 export default function Checkout() {
@@ -17,6 +17,7 @@ export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [orderCreated, setOrderCreated] = useState<any>(null);
+  const [discount, setDiscount] = useState<{ type: string; value: number } | null>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', coupon: '' });
 
   useEffect(() => {
@@ -27,26 +28,45 @@ export default function Checkout() {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  const applyCoupon = async () => {
+    if (!form.coupon || !product) return;
+    try {
+      const result = await validateCoupon(form.coupon, product.id);
+      if (result.valid) {
+        setDiscount({ type: result.discount_type!, value: result.discount_value! });
+        toast.success('Cupom aplicado!');
+      } else {
+        toast.error(result.error || 'Cupom inválido');
+      }
+    } catch {
+      toast.error('Erro ao validar cupom');
+    }
+  };
+
+  const getFinalPrice = () => {
+    if (!product) return 0;
+    if (!discount) return product.price;
+    if (discount.type === 'percentage') return product.price * (1 - discount.value / 100);
+    return Math.max(0, product.price - discount.value);
+  };
+
   const handlePurchase = async () => {
     if (!form.name || !form.email || !product) return;
     setProcessing(true);
     try {
-      // Generate a fake PIX code for demonstration
+      const finalPrice = getFinalPrice();
       const pixCode = `00020126330014BR.GOV.BCB.PIX0111${Date.now()}5204000053039865802BR5925ELITE BOT SUITE6009SAO PAULO62070503***6304`;
 
       const order = await createOrder({
         seller_id: product.user_id,
         product_id: product.id,
-        amount: product.price,
+        amount: finalPrice,
         buyer_name: form.name,
         buyer_email: form.email,
         buyer_phone: form.phone,
         payment_method: 'pix',
         coupon_code: form.coupon || undefined,
       });
-
-      // Update order with PIX code
-      await supabase.from('orders').update({ pix_code: pixCode }).eq('id', order.id);
 
       setOrderCreated({ ...order, pix_code: pixCode });
       toast.success('Pedido criado! Escaneie o QR Code para pagar.');
@@ -188,7 +208,15 @@ export default function Checkout() {
             </div>
             <div className="space-y-2">
               <Label>Cupom de desconto</Label>
-              <Input value={form.coupon} onChange={(e) => setForm((f) => ({ ...f, coupon: e.target.value }))} placeholder="Código do cupom" />
+              <div className="flex gap-2">
+                <Input value={form.coupon} onChange={(e) => setForm((f) => ({ ...f, coupon: e.target.value }))} placeholder="Código do cupom" />
+                <Button variant="outline" type="button" onClick={applyCoupon} disabled={!form.coupon}>Aplicar</Button>
+              </div>
+              {discount && (
+                <p className="text-sm text-emerald-500">
+                  Desconto: {discount.type === 'percentage' ? `${discount.value}%` : `R$ ${discount.value.toFixed(2)}`}
+                </p>
+              )}
             </div>
 
             <Separator />
@@ -203,7 +231,7 @@ export default function Checkout() {
               ) : (
                 <Lock className="mr-2 h-5 w-5" />
               )}
-              Pagar com PIX · R$ {product.price.toFixed(2)}
+              Pagar com PIX · R$ {getFinalPrice().toFixed(2)}
             </Button>
 
             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
