@@ -12,8 +12,9 @@ export const getProducts = async () => {
 export const getProductBySlug = async (slug: string) => {
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select('id, user_id, bot_id, name, description, price, currency, product_type, image_url, slug, is_active, checkout_config, order_bump_product_id, upsell_product_id, delivery_type, created_at, updated_at')
     .eq('slug', slug)
+    .eq('is_active', true)
     .single();
   if (error) throw error;
   return data;
