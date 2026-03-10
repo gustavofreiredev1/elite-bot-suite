@@ -17,6 +17,7 @@ export default function Checkout() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [orderCreated, setOrderCreated] = useState<any>(null);
+  const [discount, setDiscount] = useState<{ type: string; value: number } | null>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', coupon: '' });
 
   useEffect(() => {
