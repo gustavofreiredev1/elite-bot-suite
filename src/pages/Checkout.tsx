@@ -231,7 +231,7 @@ export default function Checkout() {
               ) : (
                 <Lock className="mr-2 h-5 w-5" />
               )}
-              Pagar com PIX · R$ {product.price.toFixed(2)}
+              Pagar com PIX · R$ {getFinalPrice().toFixed(2)}
             </Button>
 
             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
