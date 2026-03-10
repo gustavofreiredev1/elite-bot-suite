@@ -31,7 +31,11 @@ export default function Settings() {
     userPlan,
   } = usePlanStore();
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const nameInput = (document.getElementById('name') as HTMLInputElement)?.value;
+    if (nameInput && nameInput !== profile?.full_name) {
+      await useAuthStore.getState().updateProfile({ full_name: nameInput } as any);
+    }
     toast.success('Configurações salvas com sucesso!');
   };
 
