@@ -208,7 +208,15 @@ export default function Checkout() {
             </div>
             <div className="space-y-2">
               <Label>Cupom de desconto</Label>
-              <Input value={form.coupon} onChange={(e) => setForm((f) => ({ ...f, coupon: e.target.value }))} placeholder="Código do cupom" />
+              <div className="flex gap-2">
+                <Input value={form.coupon} onChange={(e) => setForm((f) => ({ ...f, coupon: e.target.value }))} placeholder="Código do cupom" />
+                <Button variant="outline" type="button" onClick={applyCoupon} disabled={!form.coupon}>Aplicar</Button>
+              </div>
+              {discount && (
+                <p className="text-sm text-emerald-500">
+                  Desconto: {discount.type === 'percentage' ? `${discount.value}%` : `R$ ${discount.value.toFixed(2)}`}
+                </p>
+              )}
             </div>
 
             <Separator />
