@@ -62,13 +62,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "affiliates_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       auto_responses: {
@@ -358,13 +351,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "coupons_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       crm_contacts: {
@@ -466,13 +452,6 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deliveries_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_public"
             referencedColumns: ["id"]
           },
         ]
@@ -710,13 +689,6 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orders_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1221,74 +1193,7 @@ export type Database = {
       }
     }
     Views: {
-      products_public: {
-        Row: {
-          bot_id: string | null
-          checkout_config: Json | null
-          created_at: string | null
-          currency: string | null
-          delivery_type: string | null
-          description: string | null
-          id: string | null
-          image_url: string | null
-          is_active: boolean | null
-          name: string | null
-          order_bump_product_id: string | null
-          price: number | null
-          product_type: string | null
-          slug: string | null
-          updated_at: string | null
-          upsell_product_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          bot_id?: string | null
-          checkout_config?: Json | null
-          created_at?: string | null
-          currency?: string | null
-          delivery_type?: string | null
-          description?: string | null
-          id?: string | null
-          image_url?: string | null
-          is_active?: boolean | null
-          name?: string | null
-          order_bump_product_id?: string | null
-          price?: number | null
-          product_type?: string | null
-          slug?: string | null
-          updated_at?: string | null
-          upsell_product_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          bot_id?: string | null
-          checkout_config?: Json | null
-          created_at?: string | null
-          currency?: string | null
-          delivery_type?: string | null
-          description?: string | null
-          id?: string | null
-          image_url?: string | null
-          is_active?: boolean | null
-          name?: string | null
-          order_bump_product_id?: string | null
-          price?: number | null
-          product_type?: string | null
-          slug?: string | null
-          updated_at?: string | null
-          upsell_product_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "products_bot_id_fkey"
-            columns: ["bot_id"]
-            isOneToOne: false
-            referencedRelation: "bots"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       get_delivery_content: { Args: { _order_id: string }; Returns: string }
