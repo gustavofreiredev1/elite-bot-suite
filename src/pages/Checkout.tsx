@@ -28,26 +28,45 @@ export default function Checkout() {
       .finally(() => setLoading(false));
   }, [slug]);
 
+  const applyCoupon = async () => {
+    if (!form.coupon || !product) return;
+    try {
+      const result = await validateCoupon(form.coupon, product.id);
+      if (result.valid) {
+        setDiscount({ type: result.discount_type!, value: result.discount_value! });
+        toast.success('Cupom aplicado!');
+      } else {
+        toast.error(result.error || 'Cupom inválido');
+      }
+    } catch {
+      toast.error('Erro ao validar cupom');
+    }
+  };
+
+  const getFinalPrice = () => {
+    if (!product) return 0;
+    if (!discount) return product.price;
+    if (discount.type === 'percentage') return product.price * (1 - discount.value / 100);
+    return Math.max(0, product.price - discount.value);
+  };
+
   const handlePurchase = async () => {
     if (!form.name || !form.email || !product) return;
     setProcessing(true);
     try {
-      // Generate a fake PIX code for demonstration
+      const finalPrice = getFinalPrice();
       const pixCode = `00020126330014BR.GOV.BCB.PIX0111${Date.now()}5204000053039865802BR5925ELITE BOT SUITE6009SAO PAULO62070503***6304`;
 
       const order = await createOrder({
         seller_id: product.user_id,
         product_id: product.id,
-        amount: product.price,
+        amount: finalPrice,
         buyer_name: form.name,
         buyer_email: form.email,
         buyer_phone: form.phone,
         payment_method: 'pix',
         coupon_code: form.coupon || undefined,
       });
-
-      // Update order with PIX code
-      await supabase.from('orders').update({ pix_code: pixCode }).eq('id', order.id);
 
       setOrderCreated({ ...order, pix_code: pixCode });
       toast.success('Pedido criado! Escaneie o QR Code para pagar.');
