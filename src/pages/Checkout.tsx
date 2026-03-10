@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ShieldCheck, Loader2, QrCode, Copy, CheckCircle2, Package, Lock } from 'lucide-react';
 import { toast } from 'sonner';
-import { getProductBySlug, createOrder } from '@/lib/products';
+import { getProductBySlug, createOrder, validateCoupon } from '@/lib/products';
 import { supabase } from '@/integrations/supabase/client';
 
 export default function Checkout() {
